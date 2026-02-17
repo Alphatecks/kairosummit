@@ -388,6 +388,10 @@
   margin-bottom: 2.5rem;
 }
 
+#truth .section__title--above-media {
+  text-align: right;
+}
+
 .section__media-wrap {
   display: flex;
   flex-direction: column;
@@ -448,6 +452,15 @@
   background: transparent;
 }
 
+.section__media--who-we-are::after {
+  content: '';
+  display: block;
+  margin-top: 1.25rem;
+  height: 12px;
+  background: #FABD21;
+  border-radius: 6px;
+}
+
 .who-we-are-stack {
   position: relative;
   width: 100%;
@@ -501,6 +514,11 @@
   color: #550E1E;
 }
 
+#truth .section__subtitle {
+  font-size: clamp(1.5rem, 2.8vw, 1.9rem);
+  color: #550E1E;
+}
+
 #about .section__text {
   font-size: clamp(1.1rem, 1.5vw, 1.25rem);
 }
@@ -535,7 +553,8 @@
   font-size: 1rem;
 }
 
-#about .section__body .link-arrow {
+#about .section__body .link-arrow,
+#truth .section__body .link-arrow {
   position: relative;
   padding-bottom: 0.5rem;
   margin-bottom: 0;
@@ -543,11 +562,13 @@
   color: #550E1E;
 }
 
-#about .section__body .link-arrow:hover {
+#about .section__body .link-arrow:hover,
+#truth .section__body .link-arrow:hover {
   color: #550E1E;
 }
 
-#about .section__body .link-arrow::after {
+#about .section__body .link-arrow::after,
+#truth .section__body .link-arrow::after {
   content: '';
   position: absolute;
   left: 0;
@@ -588,6 +609,10 @@
   margin-bottom: 0.25rem;
 }
 
+#truth .values-list .values-list__title {
+  color: #550E1E;
+}
+
 .values-list__desc {
   display: block;
   font-size: 0.95rem;
@@ -613,4 +638,258 @@
 /* Optional: highlight word Kairos in text via class if needed */
 .highlight-gold {
   color: var(--color-gold);
+}
+
+/* ----- WHAT WE DO ----- */
+#what-we-do .tag {
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.what-we-do__title {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  color: var(--color-text);
+  margin-bottom: 0.75rem;
+}
+
+.what-we-do__title .highlight-gold {
+  color: #FABD21;
+}
+
+.what-we-do__subtitle {
+  font-size: 1.05rem;
+  color: var(--color-text-muted);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.what-we-do__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .what-we-do__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.what-we-do__cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.what-we-do__card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  min-height: 280px;
+}
+
+.what-we-do__card--large {
+  aspect-ratio: auto;
+  min-height: 100%;
+}
+
+.what-we-do__card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.25);
+}
+
+.what-we-do__card-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1rem 1.25rem;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  font-weight: 600;
+  color: var(--color-white);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  line-height: 1.3;
+}
+
+.what-we-do__card--large .what-we-do__card-label {
+  font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+  padding: 1.5rem 1.75rem;
+}
+
+.what-we-do__cards .what-we-do__card:first-child .what-we-do__card-label,
+.what-we-do__cards .what-we-do__card:nth-child(2) .what-we-do__card-label,
+.what-we-do__cards .what-we-do__card:nth-child(3) .what-we-do__card-label,
+.what-we-do__cards .what-we-do__card:nth-child(4) .what-we-do__card-label {
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+}
+
+/* ----- NEWS + CAROUSEL + JOIN MOVEMENT ----- */
+#news .tag {
+  margin-bottom: 1rem;
+}
+
+.news__title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  margin-bottom: 0.75rem;
+}
+
+.news__title .highlight-gold {
+  color: #FABD21;
+}
+
+.news__subtitle {
+  font-size: 1.05rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.news__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #550E1E;
+  padding-bottom: 0.35rem;
+  border-bottom: 2px solid #FABD21;
+  transition: opacity 0.2s;
+}
+
+.news__link:hover {
+  opacity: 0.9;
+  color: #550E1E;
+}
+
+/* Maroon carousel section with curved semicircle background (arc on top) */
+.news-carousel-wrap {
+  position: relative;
+  padding: 4rem 2rem 6rem;
+  margin: 0 -2rem;
+  overflow: hidden;
+  background: #550E1E;
+  border-radius: 60% 60% 0 0;
+}
+
+.news-carousel {
+  position: relative;
+  z-index: 1;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.news-carousel__track {
+  display: flex;
+  transition: transform 0.4s ease;
+}
+
+.news-carousel__track--no-transition {
+  transition: none;
+}
+
+.news-carousel__card {
+  flex: 0 0 36%;
+  min-width: 0;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+  transition: transform 0.3s ease;
+  transform: scale(0.92);
+}
+
+.news-carousel__card--center {
+  transform: scale(1.08);
+}
+
+.news-carousel__card-img {
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 16/10;
+  margin-bottom: 1rem;
+  background: rgba(0,0,0,0.2);
+}
+
+.news-carousel__card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.news-carousel__card-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-white);
+  margin-bottom: 0.5rem;
+}
+
+.news-carousel__card-date {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  background: rgba(255,255,255,0.2);
+  color: var(--color-white);
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.news-carousel__dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.news-carousel__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: #550E1E;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.news-carousel__dot:hover {
+  background: rgba(255,255,255,0.5);
+}
+
+.news-carousel__dot--active {
+  background: #FABD21;
+}
+
+/* Join the Movement */
+#community .tag {
+  margin-bottom: 1rem;
+}
+
+#community .tag--muted,
+.tag.tag--muted {
+  background: #e5e5e5;
+  color: var(--color-text-muted);
+}
+
+.join-movement__title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  margin-bottom: 0.75rem;
+}
+
+.join-movement__title .highlight-gold {
+  color: #FABD21;
+}
+
+.join-movement__subtitle {
+  font-size: 1.05rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.join-movement__link {
+  display: inline-flex;
 }

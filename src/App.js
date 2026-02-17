@@ -6,7 +6,20 @@ import ideaIcon from './assets/icons/idea-01.png';
 import heroBg from './assets/images/pictures/3.jpeg';
 import remnantsRebornImg from './assets/images/pictures/remnants-reborn-hero.jpg';
 import whoWeAreImg from './assets/images/pictures/2.jpeg';
-import truthDisciplineImg from './assets/images/pictures/truth-discipline.png';
+import truthDisciplineImg from './assets/images/pictures/9.jpeg';
+import whatWeDoImg1 from './assets/images/pictures/8.jpeg';
+import whatWeDoImg2 from './assets/images/pictures/4.jpeg';
+import whatWeDoImg3 from './assets/images/pictures/5.jpeg';
+import whatWeDoImg4 from './assets/images/pictures/6.jpeg';
+import whatWeDoImg5 from './assets/images/pictures/7.jpeg';
+
+const NEWS_CAROUSEL_SLIDES = [
+  { img: remnantsRebornImg, title: 'Remnants Reborn.', date: 'November 15' },
+  { img: whoWeAreImg, title: 'Remnants Reborn.', date: 'November 15' },
+  { img: truthDisciplineImg, title: 'Remnants Reborn.', date: 'November 15' },
+  { img: heroBg, title: 'Remnants Reborn.', date: 'November 15' },
+  { img: whatWeDoImg2, title: 'Remnants Reborn.', date: 'November 15' },
+];
 
 const HERO_SLIDES = [
   {
@@ -23,8 +36,13 @@ const HERO_SLIDES = [
   },
 ];
 
+const NEWS_CAROUSEL_SLIDES_LOOP = [...NEWS_CAROUSEL_SLIDES, NEWS_CAROUSEL_SLIDES[0]];
+const SLIDE_COUNT = NEWS_CAROUSEL_SLIDES.length;
+
 function App() {
   const [heroSlide, setHeroSlide] = useState(0);
+  const [newsSlide, setNewsSlide] = useState(0);
+  const [carouselTransition, setCarouselTransition] = useState(true);
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -32,6 +50,31 @@ function App() {
     }, 5000);
     return () => clearInterval(t);
   }, []);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setNewsSlide((i) => {
+        if (i === SLIDE_COUNT - 1) {
+          setCarouselTransition(false);
+          return i + 1;
+        }
+        return i + 1;
+      });
+    }, 5000);
+    return () => clearInterval(t);
+  }, []);
+
+  useEffect(() => {
+    if (newsSlide !== SLIDE_COUNT) return;
+    const t = setTimeout(() => {
+      setCarouselTransition(false);
+      setNewsSlide(0);
+      const id = requestAnimationFrame(() => {
+        requestAnimationFrame(() => setCarouselTransition(true));
+      });
+    }, 450);
+    return () => clearTimeout(t);
+  }, [newsSlide]);
 
   return (
     <div className="landing">
@@ -119,8 +162,7 @@ function App() {
       </section>
 
       {/* ----- BUILT ON TRUTH ----- */}
-      <section className="section section--white">
-        <h2 className="section__title section__title--center">Built on Truth and Discipline</h2>
+      <section className="section section--white" id="truth">
         <div className="section__grid section__grid--image-right">
           <div className="section__body">
             <h3 className="section__subtitle">Just discovering <span className="highlight-gold">Kairos</span>? Here's what defines us.</h3>
@@ -140,10 +182,118 @@ function App() {
             </ul>
             <a href="#about" className="link-arrow">Learn more <span className="link-arrow__icon" aria-hidden>→</span></a>
           </div>
-          <div className="section__media">
-            <img src={truthDisciplineImg} alt="Kairos Summit" />
+          <div className="section__media-wrap">
+            <h2 className="section__title section__title--above-media">Built on Truth and Discipline</h2>
+            <div className="section__media section__media--who-we-are">
+              <div className="who-we-are-stack">
+                <div className="who-we-are-stack__rect" style={{ backgroundColor: '#FABD21' }} aria-hidden />
+                <div className="who-we-are-stack__img-wrap">
+                  <img src={truthDisciplineImg} alt="Kairos Summit 2024 Business Summit" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
+
+      {/* ----- WHAT WE DO ----- */}
+      <section className="section section--white" id="what-we-do">
+        <span className="tag">What we do</span>
+        <h2 className="section__title what-we-do__title">
+          So what happens <span className="highlight-gold">here?</span> Here's what we do.
+        </h2>
+        <p className="what-we-do__subtitle">
+          Through gatherings, teachings, and community, Kairos Summit helps believers:
+        </p>
+        <div className="what-we-do__grid">
+          <div className="what-we-do__card what-we-do__card--large">
+            <img src={whatWeDoImg1} alt="" />
+            <span className="what-we-do__card-label">Understand identity in Christ</span>
+          </div>
+          <div className="what-we-do__cards">
+            <div className="what-we-do__card">
+              <img src={whatWeDoImg2} alt="" />
+              <span className="what-we-do__card-label">Develop discipline and spiritual maturity</span>
+            </div>
+            <div className="what-we-do__card">
+              <img src={whatWeDoImg3} alt="" />
+              <span className="what-we-do__card-label">Engage culture with wisdom</span>
+            </div>
+            <div className="what-we-do__card">
+              <img src={whatWeDoImg4} alt="" />
+              <span className="what-we-do__card-label">Build leadership capacity</span>
+            </div>
+            <div className="what-we-do__card">
+              <img src={whatWeDoImg5} alt="" />
+              <span className="what-we-do__card-label">Grow in faith and community</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ----- NEWS + CAROUSEL + JOIN MOVEMENT ----- */}
+      <section className="section section--white" id="news">
+        <span className="tag">News</span>
+        <h2 className="section__title news__title">
+          News at <span className="highlight-gold">Kairos</span>? We're ready to help!
+        </h2>
+        <p className="news__subtitle">
+          Through gatherings, teachings, and community, Kairos Summit helps believers:
+        </p>
+        <a href="#what-we-do" className="news__link">Learn more <span className="link-arrow__icon" aria-hidden>→</span></a>
+      </section>
+
+      <section className="news-carousel-wrap" aria-label="Events carousel">
+        <div className="news-carousel">
+          <div
+            className={`news-carousel__track ${!carouselTransition ? 'news-carousel__track--no-transition' : ''}`}
+            style={{
+              transform: (() => {
+                const CARD_WIDTH_PERCENT = 36;
+                const TRACK_WIDTH_PERCENT = NEWS_CAROUSEL_SLIDES_LOOP.length * CARD_WIDTH_PERCENT;
+                const centerOfActive = newsSlide * CARD_WIDTH_PERCENT + CARD_WIDTH_PERCENT / 2;
+                const moveTrackLeft = centerOfActive - 50;
+                const trackPercent = (-moveTrackLeft / TRACK_WIDTH_PERCENT) * 100;
+                return `translateX(${trackPercent}%)`;
+              })(),
+            }}
+          >
+            {NEWS_CAROUSEL_SLIDES_LOOP.map((slide, i) => (
+              <div
+                key={i}
+                className={`news-carousel__card ${i === newsSlide ? 'news-carousel__card--center' : ''}`}
+              >
+                <div className="news-carousel__card-img">
+                  <img src={slide.img} alt="" />
+                </div>
+                <h3 className="news-carousel__card-title">{slide.title}</h3>
+                <span className="news-carousel__card-date">{slide.date}</span>
+              </div>
+            ))}
+          </div>
+          <div className="news-carousel__dots" aria-hidden>
+            {NEWS_CAROUSEL_SLIDES.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                className={`news-carousel__dot ${i === newsSlide % SLIDE_COUNT ? 'news-carousel__dot--active' : ''}`}
+                onClick={() => setNewsSlide(i)}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section--white" id="community">
+        <span className="tag tag--muted">Hero section</span>
+        <h2 className="section__title join-movement__title">
+          Join the <span className="highlight-gold">Movement</span>
+        </h2>
+        <p className="join-movement__subtitle">
+          You are not called to passive faith. You are called to intentional impact.
+        </p>
+        <a href="#community" className="news__link join-movement__link">Join the Community <span className="link-arrow__icon" aria-hidden>→</span></a>
       </section>
     </div>
   );
