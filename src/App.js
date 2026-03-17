@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, NavLink } from 'react-router-dom';
 import './App.css';
 
 import logo from './assets/images/icons/logo.svg';
@@ -12,6 +13,12 @@ import whatWeDoImg2 from './assets/images/pictures/4.jpeg';
 import whatWeDoImg3 from './assets/images/pictures/5.jpeg';
 import whatWeDoImg4 from './assets/images/pictures/6.jpeg';
 import whatWeDoImg5 from './assets/images/pictures/7.jpeg';
+import aboutImg12 from './assets/images/pictures/12.png';
+import aboutImg13 from './assets/images/pictures/13.png';
+import aboutImg14 from './assets/images/pictures/14.png';
+import aboutImg15 from './assets/images/pictures/15.png';
+
+const WHATSAPP_LINK = 'https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t';
 
 const HERO_SLIDES = [
   {
@@ -52,6 +59,98 @@ function getSemicirclePosition(slotIndex, totalSlots) {
 const SLOT_LEFT_OFFSETS = [-270, -100, -50, -25, 70, 250];
 const SLOT_TOP_OFFSETS = [-25, 45, 115, 115, 45, -55];
 
+function NavBar() {
+  return (
+    <>
+      <nav className="nav">
+        <NavLink to="/" className="nav__brand" aria-label="Kairos Summit home">
+          <img src={logo} alt="Kairos Summit" className="nav__logo-icon" />
+        </NavLink>
+        <ul className="nav__links">
+          <li>
+            <NavLink to="/" end className={({ isActive }) => `nav__link ${isActive ? 'nav__link--active' : ''}`}>Home</NavLink>
+          </li>
+          <li>
+            <NavLink to="/about" className={({ isActive }) => `nav__link ${isActive ? 'nav__link--active' : ''}`}>About</NavLink>
+          </li>
+          <li><a href="/#team" className="nav__link">Team/Contact</a></li>
+          <li><a href="/#blog" className="nav__link">Blog</a></li>
+        </ul>
+      </nav>
+      <a href={WHATSAPP_LINK} className="nav-cta btn btn--primary" target="_blank" rel="noopener noreferrer">Join our community</a>
+    </>
+  );
+}
+
+function AboutPage() {
+  return (
+    <div className="landing about-page">
+      <NavBar />
+      <main className="about-main">
+        <section className="about-hero section section--white">
+          <div className="about-hero__grid">
+            <div className="about-hero__left">
+              <h1 className="about-hero__headline">
+                New to <span className="highlight-gold">Kairos?</span><br />Here&apos;s Our Story
+              </h1>
+              <span className="about-pill">
+                <span className="about-pill__dot" aria-hidden />
+                Our Story
+              </span>
+            </div>
+            <div className="about-hero__right">
+              <p className="about-hero__text">
+                Kairos Summit was birthed from a conviction that this generation has a divine assignment. The word Kairos represents a divinely appointed time, a moment of alignment and purpose. We believe this generation has been positioned intentionally by God to influence culture, lead with integrity, and live with clarity. Kairos Summit exists to prepare believers for that assignment.
+              </p>
+              <div className="about-hero__ctas">
+                <a href={WHATSAPP_LINK} className="btn btn--primary" target="_blank" rel="noopener noreferrer">Join our community</a>
+                <a href="/#what-we-do" className="btn btn--gold">Learn more <img src={ideaIcon} alt="" className="btn__icon btn__icon--bulb" width={20} height={20} aria-hidden /></a>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className="about-gallery section section--white">
+          <div className="about-gallery__grid">
+            <div className="about-gallery__slot about-gallery__slot--top-left">
+              <img src={aboutImg12} alt="Kairos Summit panel" />
+            </div>
+            <div className="about-gallery__slot about-gallery__slot--narrow">
+              <img src={aboutImg15} alt="Speaker at Kairos Summit" />
+            </div>
+            <div className="about-gallery__slot about-gallery__slot--right">
+              <img src={aboutImg14} alt="Registration at Kairos Summit 2024" />
+            </div>
+            <div className="about-gallery__slot about-gallery__slot--bottom-left">
+              <img src={aboutImg13} alt="Attendees at Kairos Summit" />
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer className="footer">
+        <div className="footer__inner">
+          <div className="footer__brand">
+            <div className="footer__logo">
+              <img src={logo} alt="Kairos Summit" className="footer__logo-icon" />
+            </div>
+            <div className="footer__social">
+              <a href="https://x.com/kairos_summit?s=21" className="footer__social-link" target="_blank" rel="noopener noreferrer">X</a>
+              <a href="https://www.instagram.com/kairos_summit/" className="footer__social-link" target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a href="https://youtube.com/@kairossummit-official?si=UQE7oG1sz0M8105R" className="footer__social-link" target="_blank" rel="noopener noreferrer">Youtube</a>
+              <a href="https://www.facebook.com/share/1FX2cBR5Df/" className="footer__social-link" target="_blank" rel="noopener noreferrer">Facebook</a>
+            </div>
+          </div>
+          <div className="footer__copy">
+            <p className="footer__tagline">A gathering centered on revival with responsibility.</p>
+            <p className="footer__tagline">Restoring believers to clarity of identity, depth of faith, and courage of expression.</p>
+            <a href={WHATSAPP_LINK} className="footer__cta" target="_blank" rel="noopener noreferrer">Join the Community</a>
+          </div>
+        </div>
+        <div className="footer__separator" aria-hidden />
+      </footer>
+    </div>
+  );
+}
+
 function App() {
   const [heroSlide, setHeroSlide] = useState(0);
   const [rainbowCardIndex, setRainbowCardIndex] = useState(0);
@@ -64,20 +163,11 @@ function App() {
   }, []);
 
   return (
+    <Routes>
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/" element={
     <div className="landing">
-      {/* ----- NAV ----- */}
-      <nav className="nav">
-        <div className="nav__brand">
-          <img src={logo} alt="Kairos Summit" className="nav__logo-icon" />
-        </div>
-        <ul className="nav__links">
-          <li><a href="#home" className="nav__link nav__link--active">Home</a></li>
-          <li><a href="#about" className="nav__link">About</a></li>
-          <li><a href="#team" className="nav__link">Team/Contact</a></li>
-          <li><a href="#blog" className="nav__link">Blog</a></li>
-        </ul>
-      </nav>
-      <a href="#community" className="nav-cta btn btn--primary">Join our community</a>
+      <NavBar />
 
       {/* ----- HERO ----- */}
       <section className="hero" id="home">
@@ -104,8 +194,8 @@ function App() {
           </div>
         </div>
         <div className="hero__cta">
-          <a href="#community" className="btn btn--primary">Join our community</a>
-          <a href="#about" className="btn btn--gold">Learn more <img src={ideaIcon} alt="" className="btn__icon btn__icon--bulb" width={20} height={20} aria-hidden /></a>
+          <a href="https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t" className="btn btn--primary" target="_blank" rel="noopener noreferrer">Join our community</a>
+          <a href="/about" className="btn btn--gold">Learn more <img src={ideaIcon} alt="" className="btn__icon btn__icon--bulb" width={20} height={20} aria-hidden /></a>
         </div>
         <div className="hero__event-box">
           <div className="hero__event-media">
@@ -143,7 +233,7 @@ function App() {
             <p className="section__text">
               Kairos Summit is more than a gathering. It is a formation space for believers who desire depth, clarity, and responsibility in their walk with God. We equip Christians to live out their faith with conviction in leadership, creativity, career, media, and everyday life. We believe this generation is not late, lost, or forgotten. We believe this is a Kairos moment.
             </p>
-            <a href="#community" className="link-arrow">Join the Community <span className="link-arrow__icon" aria-hidden>→</span></a>
+            <a href="https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t" className="link-arrow" target="_blank" rel="noopener noreferrer">Join the Community <span className="link-arrow__icon" aria-hidden>→</span></a>
           </div>
         </div>
       </section>
@@ -286,10 +376,38 @@ function App() {
           <p className="join-movement__subtitle">
             You are not called to passive faith. You are called to intentional impact.
           </p>
-          <a href="#community" className="news__link join-movement__link">Join the Community <span className="link-arrow__icon" aria-hidden>→</span></a>
+          <a href="https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t" className="news__link join-movement__link" target="_blank" rel="noopener noreferrer">Join the Community <span className="link-arrow__icon" aria-hidden>→</span></a>
         </div>
       </section>
+
+      <footer className="footer">
+        <div className="footer__inner">
+          <div className="footer__brand">
+            <div className="footer__logo">
+              <img src={logo} alt="Kairos Summit" className="footer__logo-icon" />
+            </div>
+            <div className="footer__social">
+              <a href="https://x.com/kairos_summit?s=21" className="footer__social-link" target="_blank" rel="noopener noreferrer">X</a>
+              <a href="https://www.instagram.com/kairos_summit/" className="footer__social-link" target="_blank" rel="noopener noreferrer">Instagram</a>
+              <a href="https://youtube.com/@kairossummit-official?si=UQE7oG1sz0M8105R" className="footer__social-link" target="_blank" rel="noopener noreferrer">Youtube</a>
+              <a href="https://www.facebook.com/share/1FX2cBR5Df/" className="footer__social-link" target="_blank" rel="noopener noreferrer">Facebook</a>
+            </div>
+          </div>
+          <div className="footer__copy">
+            <p className="footer__tagline">
+              A gathering centered on revival with responsibility.
+            </p>
+            <p className="footer__tagline">
+              Restoring believers to clarity of identity, depth of faith, and courage of expression.
+            </p>
+            <a href="https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t" className="footer__cta" target="_blank" rel="noopener noreferrer">Join the Community</a>
+          </div>
+        </div>
+        <div className="footer__separator" aria-hidden />
+      </footer>
     </div>
+      } />
+    </Routes>
   );
 }
 
