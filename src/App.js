@@ -49,7 +49,6 @@ function getSemicirclePosition(slotIndex, totalSlots) {
   return { x, y };
 }
 
-const nSlots = 6;
 const SLOT_LEFT_OFFSETS = [-270, -100, -50, -25, 70, 250];
 const SLOT_TOP_OFFSETS = [-25, 45, 115, 115, 45, -55];
 
