@@ -13,14 +13,6 @@ import whatWeDoImg3 from './assets/images/pictures/5.jpeg';
 import whatWeDoImg4 from './assets/images/pictures/6.jpeg';
 import whatWeDoImg5 from './assets/images/pictures/7.jpeg';
 
-const NEWS_CAROUSEL_SLIDES = [
-  { img: remnantsRebornImg, title: 'Remnants Reborn.', date: 'November 15' },
-  { img: whoWeAreImg, title: 'Remnants Reborn.', date: 'November 15' },
-  { img: truthDisciplineImg, title: 'Remnants Reborn.', date: 'November 15' },
-  { img: heroBg, title: 'Remnants Reborn.', date: 'November 15' },
-  { img: whatWeDoImg2, title: 'Remnants Reborn.', date: 'November 15' },
-];
-
 const HERO_SLIDES = [
   {
     title: 'A Generation Aligned for Impact',
@@ -36,13 +28,34 @@ const HERO_SLIDES = [
   },
 ];
 
-const NEWS_CAROUSEL_SLIDES_LOOP = [...NEWS_CAROUSEL_SLIDES, NEWS_CAROUSEL_SLIDES[0]];
-const SLIDE_COUNT = NEWS_CAROUSEL_SLIDES.length;
+const RAINBOW_CARDS = [
+  { img: remnantsRebornImg, title: 'Remnants Reborn.', date: 'November 15' },
+  { img: truthDisciplineImg, title: 'Truth & Discipline.', date: 'December 3' },
+  { img: whatWeDoImg3, title: 'Community & Growth.', date: 'December 20' },
+  { img: whoWeAreImg, title: 'Who We Are.', date: 'January 12' },
+  { img: whatWeDoImg1, title: 'Formation Gathering.', date: 'February 8' },
+  { img: whatWeDoImg2, title: 'Kairos Summit 2026.', date: 'March 20' },
+];
+
+const SEMICIRCLE_RADIUS = 480;
+const SEMICIRCLE_CX = 500;
+const SEMICIRCLE_CY = 380;
+function getSemicirclePosition(slotIndex, totalSlots) {
+  const step = 180 / Math.max(1, totalSlots - 1);
+  const angleDeg = 180 - slotIndex * step;
+  const angleRad = (angleDeg * Math.PI) / 180;
+  const x = SEMICIRCLE_CX + SEMICIRCLE_RADIUS * Math.cos(angleRad);
+  const y = SEMICIRCLE_CY - SEMICIRCLE_RADIUS * Math.sin(angleRad);
+  return { x, y };
+}
+
+const nSlots = 6;
+const SLOT_LEFT_OFFSETS = [-270, -100, -50, -25, 70, 250];
+const SLOT_TOP_OFFSETS = [-25, 45, 115, 115, 45, -55];
 
 function App() {
   const [heroSlide, setHeroSlide] = useState(0);
-  const [newsSlide, setNewsSlide] = useState(0);
-  const [carouselTransition, setCarouselTransition] = useState(true);
+  const [rainbowCardIndex, setRainbowCardIndex] = useState(0);
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -50,31 +63,6 @@ function App() {
     }, 5000);
     return () => clearInterval(t);
   }, []);
-
-  useEffect(() => {
-    const t = setInterval(() => {
-      setNewsSlide((i) => {
-        if (i === SLIDE_COUNT - 1) {
-          setCarouselTransition(false);
-          return i + 1;
-        }
-        return i + 1;
-      });
-    }, 5000);
-    return () => clearInterval(t);
-  }, []);
-
-  useEffect(() => {
-    if (newsSlide !== SLIDE_COUNT) return;
-    const t = setTimeout(() => {
-      setCarouselTransition(false);
-      setNewsSlide(0);
-      const id = requestAnimationFrame(() => {
-        requestAnimationFrame(() => setCarouselTransition(true));
-      });
-    }, 450);
-    return () => clearTimeout(t);
-  }, [newsSlide]);
 
   return (
     <div className="landing">
@@ -243,57 +231,64 @@ function App() {
         <a href="#what-we-do" className="news__link">Learn more <span className="link-arrow__icon" aria-hidden>→</span></a>
       </section>
 
-      <section className="news-carousel-wrap" aria-label="Events carousel">
-        <div className="news-carousel">
-          <div
-            className={`news-carousel__track ${!carouselTransition ? 'news-carousel__track--no-transition' : ''}`}
-            style={{
-              transform: (() => {
-                const CARD_WIDTH_PERCENT = 36;
-                const TRACK_WIDTH_PERCENT = NEWS_CAROUSEL_SLIDES_LOOP.length * CARD_WIDTH_PERCENT;
-                const centerOfActive = newsSlide * CARD_WIDTH_PERCENT + CARD_WIDTH_PERCENT / 2;
-                const moveTrackLeft = centerOfActive - 50;
-                const trackPercent = (-moveTrackLeft / TRACK_WIDTH_PERCENT) * 100;
-                return `translateX(${trackPercent}%)`;
-              })(),
-            }}
-          >
-            {NEWS_CAROUSEL_SLIDES_LOOP.map((slide, i) => (
-              <div
-                key={i}
-                className={`news-carousel__card ${i === newsSlide ? 'news-carousel__card--center' : ''}`}
-              >
-                <div className="news-carousel__card-img">
-                  <img src={slide.img} alt="" />
+      {/* Rainbow + event card in arc + Join the Movement under the arc */}
+      <section className="rainbow-section" id="community">
+        <div className="rainbow">
+          <div className="rainbow__strand" aria-hidden="true" />
+        </div>
+        <div className="rainbow-section__card-wrap">
+          <div className="rainbow-section__cards" role="list">
+            {RAINBOW_CARDS.map((card, i) => {
+              const n = RAINBOW_CARDS.length;
+              const slot = (i - rainbowCardIndex + 2 + n) % n;
+              const { x, y } = getSemicirclePosition(slot, n);
+              const leftOffset = SLOT_LEFT_OFFSETS[slot] ?? 0;
+              const topOffset = SLOT_TOP_OFFSETS[slot] ?? 0;
+              return (
+                <div
+                  key={i}
+                  role="listitem"
+                  className={`rainbow-section__card ${i === rainbowCardIndex ? 'rainbow-section__card--active' : ''}`}
+                  onClick={() => setRainbowCardIndex(i)}
+                  style={{
+                    left: `${x + leftOffset}px`,
+                    top: `${y + topOffset}px`,
+                  }}
+                >
+                  <div className="rainbow-section__card-img-card">
+                    <img src={card.img} alt="" className="rainbow-section__card-img" />
+                  </div>
+                  <div className="rainbow-section__card-copy">
+                    <h3 className="rainbow-section__card-title">{card.title}</h3>
+                    <span className="rainbow-section__card-date">{card.date}</span>
+                  </div>
                 </div>
-                <h3 className="news-carousel__card-title">{slide.title}</h3>
-                <span className="news-carousel__card-date">{slide.date}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
-          <div className="news-carousel__dots" aria-hidden>
-            {NEWS_CAROUSEL_SLIDES.map((_, i) => (
+          <div className="rainbow-section__card-dots" aria-hidden>
+            {RAINBOW_CARDS.map((_, i) => (
               <button
                 key={i}
                 type="button"
-                className={`news-carousel__dot ${i === newsSlide % SLIDE_COUNT ? 'news-carousel__dot--active' : ''}`}
-                onClick={() => setNewsSlide(i)}
-                aria-label={`Go to slide ${i + 1}`}
+                className={`rainbow-section__card-dot ${i === rainbowCardIndex ? 'rainbow-section__card-dot--active' : ''}`}
+                onClick={() => setRainbowCardIndex(i)}
+                aria-label={`Select card ${i + 1}`}
+                aria-current={i === rainbowCardIndex ? 'true' : undefined}
               />
             ))}
           </div>
         </div>
-      </section>
-
-      <section className="section section--white" id="community">
-        <span className="tag tag--muted">Hero section</span>
-        <h2 className="section__title join-movement__title">
-          Join the <span className="highlight-gold">Movement</span>
-        </h2>
-        <p className="join-movement__subtitle">
-          You are not called to passive faith. You are called to intentional impact.
-        </p>
-        <a href="#community" className="news__link join-movement__link">Join the Community <span className="link-arrow__icon" aria-hidden>→</span></a>
+        <div className="rainbow-section__content">
+          <span className="tag tag--muted">Hero section</span>
+          <h2 className="section__title join-movement__title">
+            Join the <span className="highlight-gold">Movement</span>
+          </h2>
+          <p className="join-movement__subtitle">
+            You are not called to passive faith. You are called to intentional impact.
+          </p>
+          <a href="#community" className="news__link join-movement__link">Join the Community <span className="link-arrow__icon" aria-hidden>→</span></a>
+        </div>
       </section>
     </div>
   );
