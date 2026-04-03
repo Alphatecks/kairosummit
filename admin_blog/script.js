@@ -12,11 +12,47 @@ const authSwitchText = document.getElementById("authSwitchText");
 const authSwitchButton = document.getElementById("authSwitchButton");
 const formMessage = document.getElementById("formMessage");
 let isSignupMode = false;
+let isSubmitting = false;
+
+const API_BASE_URL = "https://your-domain.com";
+const SIGNUP_ENDPOINT = `${API_BASE_URL}/api/auth/signup`;
+const LOGIN_ENDPOINT = `${API_BASE_URL}/api/auth/login`;
 
 function setMessage(text, type) {
   formMessage.textContent = text;
   formMessage.classList.remove("is-error", "is-success");
   if (type) formMessage.classList.add(type);
+}
+
+function setSubmittingState(nextSubmitting) {
+  isSubmitting = nextSubmitting;
+  submitButton.disabled = nextSubmitting;
+  authSwitchButton.disabled = nextSubmitting;
+  submitButton.textContent = nextSubmitting
+    ? isSignupMode
+      ? "Creating account..."
+      : "Signing in..."
+    : isSignupMode
+      ? "Create account"
+      : "Sign in";
+}
+
+async function parseApiResponse(response) {
+  let payload = null;
+  try {
+    payload = await response.json();
+  } catch (error) {
+    payload = null;
+  }
+
+  if (!response.ok) {
+    const message =
+      (payload && (payload.message || payload.error)) ||
+      "Request failed. Please try again.";
+    throw new Error(message);
+  }
+
+  return payload;
 }
 
 function applyAuthMode() {
@@ -56,8 +92,9 @@ togglePasswordBtn.addEventListener("click", () => {
   );
 });
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (isSubmitting) return;
 
   const fullName = fullNameInput.value.trim();
   const email = emailInput.value.trim();
@@ -102,11 +139,48 @@ form.addEventListener("submit", (event) => {
       return;
     }
 
-    // UI-only success state. Connect this to your backend auth endpoint.
-    setMessage("Signup successful. Redirecting to blogger dashboard...", "is-success");
+    const formData = new FormData();
+    formData.append("fullName", fullName);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("confirmPassword", confirmPassword);
+    formData.append("photo", profilePhoto);
+
+    try {
+      setSubmittingState(true);
+      await parseApiResponse(
+        await fetch(SIGNUP_ENDPOINT, {
+          method: "POST",
+          body: formData,
+        })
+      );
+      setMessage("Signup successful. Redirecting to blogger dashboard...", "is-success");
+    } catch (error) {
+      setMessage(error.message, "is-error");
+    } finally {
+      setSubmittingState(false);
+    }
     return;
   }
 
-  // UI-only success state. Connect this to your backend auth endpoint.
-  setMessage("Login successful. Redirecting to blogger dashboard...", "is-success");
+  try {
+    setSubmittingState(true);
+    await parseApiResponse(
+      await fetch(LOGIN_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      })
+    );
+    setMessage("Login successful. Redirecting to blogger dashboard...", "is-success");
+  } catch (error) {
+    setMessage(error.message, "is-error");
+  } finally {
+    setSubmittingState(false);
+  }
 });
