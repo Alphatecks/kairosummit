@@ -95,6 +95,13 @@ body {
   font: inherit;
 }
 
+.field .field__file-input {
+  height: auto;
+  min-height: 46px;
+  padding: 0.62rem 0.72rem;
+  cursor: pointer;
+}
+
 .field input:focus {
   outline: 2px solid rgba(250, 189, 33, 0.6);
   outline-offset: 1px;

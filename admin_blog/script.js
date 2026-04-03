@@ -5,6 +5,7 @@ const emailInput = document.getElementById("email");
 const fullNameInput = document.getElementById("fullName");
 const passwordInput = document.getElementById("password");
 const confirmPasswordInput = document.getElementById("confirmPassword");
+const profilePhotoInput = document.getElementById("profilePhoto");
 const togglePasswordBtn = document.getElementById("togglePassword");
 const submitButton = document.getElementById("submitButton");
 const authSwitchText = document.getElementById("authSwitchText");
@@ -33,8 +34,10 @@ function applyAuthMode() {
   passwordInput.autocomplete = isSignupMode ? "new-password" : "current-password";
   fullNameInput.required = isSignupMode;
   confirmPasswordInput.required = isSignupMode;
+  profilePhotoInput.required = isSignupMode;
   fullNameInput.value = "";
   confirmPasswordInput.value = "";
+  profilePhotoInput.value = "";
   setMessage("", "");
 }
 
@@ -60,6 +63,7 @@ form.addEventListener("submit", (event) => {
   const email = emailInput.value.trim();
   const password = passwordInput.value.trim();
   const confirmPassword = confirmPasswordInput.value.trim();
+  const profilePhoto = profilePhotoInput.files[0];
 
   if (!email || !password) {
     setMessage("Enter both email and password.", "is-error");
@@ -85,6 +89,16 @@ form.addEventListener("submit", (event) => {
 
     if (confirmPassword !== password) {
       setMessage("Password confirmation does not match.", "is-error");
+      return;
+    }
+
+    if (!profilePhoto) {
+      setMessage("Upload a profile photo to complete signup.", "is-error");
+      return;
+    }
+
+    if (!profilePhoto.type.startsWith("image/")) {
+      setMessage("Profile photo must be an image file.", "is-error");
       return;
     }
 
