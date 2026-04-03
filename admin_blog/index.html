@@ -14,16 +14,27 @@
   </head>
   <body>
     <main class="admin-auth">
-      <section class="admin-auth__panel" aria-label="Admin login form">
+      <section class="admin-auth__panel" aria-label="Blogger authentication form">
         <div class="admin-auth__brand">
           <p class="admin-auth__eyebrow">Kairos Summit</p>
-          <h1 class="admin-auth__title">Blogger Login</h1>
-          <p class="admin-auth__subtitle">
+          <h1 class="admin-auth__title" id="authTitle">Blogger Login</h1>
+          <p class="admin-auth__subtitle" id="authSubtitle">
             Sign in to manage posts, moderate comments, and publish updates.
           </p>
         </div>
 
         <form id="adminLoginForm" class="admin-auth__form" novalidate>
+          <label class="field field--signup-only" id="nameField">
+            <span class="field__label">Full Name</span>
+            <input
+              id="fullName"
+              name="fullName"
+              type="text"
+              autocomplete="name"
+              placeholder="Enter your full name"
+            />
+          </label>
+
           <label class="field">
             <span class="field__label">Email Address</span>
             <input
@@ -59,6 +70,17 @@
             </div>
           </label>
 
+          <label class="field field--signup-only" id="confirmPasswordField">
+            <span class="field__label">Confirm Password</span>
+            <input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              autocomplete="new-password"
+              placeholder="Confirm your password"
+            />
+          </label>
+
           <div class="admin-auth__options">
             <label class="remember">
               <input type="checkbox" name="remember" />
@@ -67,8 +89,13 @@
             <a href="#" class="admin-auth__link">Forgot password?</a>
           </div>
 
-          <button type="submit" class="admin-auth__submit">Sign in</button>
+          <button type="submit" class="admin-auth__submit" id="submitButton">Sign in</button>
           <p id="formMessage" class="admin-auth__message" aria-live="polite"></p>
+
+          <p class="admin-auth__switch">
+            <span id="authSwitchText">No account yet?</span>
+            <button id="authSwitchButton" type="button" class="admin-auth__switch-btn">Create signup</button>
+          </p>
         </form>
       </section>
     </main>
