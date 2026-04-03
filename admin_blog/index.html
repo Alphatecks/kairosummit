@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kairos Admin Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="admin-auth">
+      <section class="admin-auth__panel" aria-label="Admin login form">
+        <div class="admin-auth__brand">
+          <p class="admin-auth__eyebrow">Kairos Summit</p>
+          <h1 class="admin-auth__title">Admin Blog Login</h1>
+          <p class="admin-auth__subtitle">
+            Sign in to manage posts, moderate comments, and publish updates.
+          </p>
+        </div>
+
+        <form id="adminLoginForm" class="admin-auth__form" novalidate>
+          <label class="field">
+            <span class="field__label">Email Address</span>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              placeholder="admin@kairosummit.org"
+              required
+            />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Password</span>
+            <div class="field__password-wrap">
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                minlength="8"
+                required
+              />
+              <button
+                class="field__toggle"
+                id="togglePassword"
+                type="button"
+                aria-label="Show password"
+              >
+                Show
+              </button>
+            </div>
+          </label>
+
+          <div class="admin-auth__options">
+            <label class="remember">
+              <input type="checkbox" name="remember" />
+              <span>Remember me</span>
+            </label>
+            <a href="#" class="admin-auth__link">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="admin-auth__submit">Sign in</button>
+          <p id="formMessage" class="admin-auth__message" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
