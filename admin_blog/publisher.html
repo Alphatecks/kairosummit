@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kairos Admin Blog Publisher</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./publisher.css" />
+  </head>
+  <body>
+    <main class="publisher">
+      <section class="publisher__shell">
+        <header class="publisher__header">
+          <p class="publisher__eyebrow">Kairos Summit</p>
+          <h1 class="publisher__title">Admin Blog Publisher</h1>
+          <p class="publisher__subtitle">
+            Create blog entries for featured banner, recent stories cards, and full post details.
+            Submit directly to your database endpoint.
+          </p>
+        </header>
+
+        <form id="blogPublisherForm" class="publisher__form" novalidate>
+          <section class="panel">
+            <h2 class="panel__title">API Target</h2>
+            <div class="grid grid--3">
+              <label class="field">
+                <span class="field__label">Base URL</span>
+                <input id="apiBaseUrl" name="apiBaseUrl" type="url" placeholder="https://api.kairosummit.org" />
+              </label>
+              <label class="field">
+                <span class="field__label">Posts Endpoint</span>
+                <input id="apiEndpoint" name="apiEndpoint" type="text" value="/api/blog/posts" />
+              </label>
+              <label class="field">
+                <span class="field__label">Bearer Token (optional)</span>
+                <input id="apiToken" name="apiToken" type="text" placeholder="Paste JWT token if required" />
+              </label>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2 class="panel__title">Story Core</h2>
+            <div class="grid grid--2">
+              <label class="field">
+                <span class="field__label">Title*</span>
+                <input id="title" name="title" type="text" placeholder="Growing Deep, Not Just Loud" required />
+              </label>
+              <label class="field">
+                <span class="field__label">Slug*</span>
+                <input id="slug" name="slug" type="text" placeholder="growing-deep-not-just-loud" required />
+              </label>
+              <label class="field">
+                <span class="field__label">Category*</span>
+                <select id="category" name="category" required>
+                  <option value="">Select category</option>
+                  <option value="Spirituality">Spirituality</option>
+                  <option value="Faith & Culture">Faith & Culture</option>
+                  <option value="Leadership & Purpose">Leadership & Purpose</option>
+                  <option value="Community & Formation">Community & Formation</option>
+                </select>
+              </label>
+              <label class="field">
+                <span class="field__label">Tag</span>
+                <input id="tag" name="tag" type="text" value="update" />
+              </label>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2 class="panel__title">Media and Meta</h2>
+            <div class="grid grid--3">
+              <label class="field">
+                <span class="field__label">Featured Image URL*</span>
+                <input id="imageUrl" name="imageUrl" type="url" placeholder="https://..." required />
+              </label>
+              <label class="field">
+                <span class="field__label">Author Name*</span>
+                <input id="author" name="author" type="text" value="Chikezie Ndubuisi" required />
+              </label>
+              <label class="field">
+                <span class="field__label">Author Avatar URL (optional)</span>
+                <input id="authorAvatarUrl" name="authorAvatarUrl" type="url" placeholder="https://..." />
+              </label>
+              <label class="field">
+                <span class="field__label">Display Date*</span>
+                <input id="date" name="date" type="text" placeholder="5th Feb 2026" required />
+              </label>
+              <label class="field">
+                <span class="field__label">Read Time*</span>
+                <input id="readTime" name="readTime" type="text" value="5 mins read" required />
+              </label>
+              <label class="field">
+                <span class="field__label">Status*</span>
+                <select id="status" name="status" required>
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                </select>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <label class="check">
+                <input id="isFeatured" name="isFeatured" type="checkbox" />
+                <span>Show as Featured Story on top of blog page</span>
+              </label>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2 class="panel__title">Content Blocks</h2>
+            <label class="field">
+              <span class="field__label">Excerpt (for card + featured overlay)*</span>
+              <textarea id="excerpt" name="excerpt" rows="3" placeholder="Short summary..." required></textarea>
+            </label>
+            <label class="field">
+              <span class="field__label">Body Paragraphs* (one paragraph per line)</span>
+              <textarea
+                id="body"
+                name="body"
+                rows="8"
+                placeholder="Paragraph 1&#10;Paragraph 2&#10;Paragraph 3"
+                required
+              ></textarea>
+            </label>
+          </section>
+
+          <section class="panel">
+            <h2 class="panel__title">Optional Seed Comments</h2>
+            <p class="panel__help">
+              For initial story page comments. Add one per line using format:
+              <code>Name|Comment text|2 days ago</code>
+            </p>
+            <label class="field">
+              <span class="field__label">Comments Seed</span>
+              <textarea id="seedComments" name="seedComments" rows="4" placeholder="Ada|Great post|2 days ago"></textarea>
+            </label>
+          </section>
+
+          <section class="panel">
+            <h2 class="panel__title">Live Payload Preview</h2>
+            <pre id="payloadPreview" class="payload"></pre>
+          </section>
+
+          <div class="actions">
+            <button type="button" id="saveDraftBtn" class="btn btn--ghost">Save local draft</button>
+            <button type="button" id="clearDraftBtn" class="btn btn--ghost">Clear draft</button>
+            <button type="submit" id="publishBtn" class="btn btn--primary">Publish to database</button>
+          </div>
+          <p id="formMessage" class="message" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+
+    <script src="./publisher.js"></script>
+  </body>
+</html>

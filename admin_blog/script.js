@@ -14,7 +14,7 @@ const formMessage = document.getElementById("formMessage");
 let isSignupMode = false;
 let isSubmitting = false;
 
-const API_BASE_URL = "https://your-domain.com";
+const API_BASE_URL = "https://blogger-backend-4d6s.onrender.com";
 const SIGNUP_ENDPOINT = `${API_BASE_URL}/api/auth/signup`;
 const LOGIN_ENDPOINT = `${API_BASE_URL}/api/auth/login`;
 
