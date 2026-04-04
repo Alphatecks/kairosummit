@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, NavLink, useLocation } from 'react-router-dom';
+import { Routes, Route, NavLink, Link, useLocation, useParams } from 'react-router-dom';
 import './App.css';
 
 import logo from './assets/images/icons/logo.svg';
@@ -28,6 +28,9 @@ import obasImg from './assets/images/pictures/obas.png';
 import blogHeroImg from './assets/images/pictures/DSC_9812.JPG';
 
 const WHATSAPP_LINK = 'https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t';
+const BLOG_API_BASE_URL = 'https://blogger-backend-4d6s.onrender.com';
+const BLOG_FEED_ENDPOINT = `${BLOG_API_BASE_URL}/api/blogs/feed?page=1&limit=20`;
+const BLOG_TOP_HEADER_ENDPOINT = `${BLOG_API_BASE_URL}/api/blogs/top-header`;
 
 const HERO_SLIDES = [
   {
@@ -70,28 +73,161 @@ const STORY_TEMPLATES = [
     title: 'Growing Deep, Not Just Loud',
     excerpt: 'Teachings and reflections to help you build real spiritual depth, discipline, and consistency in your walk with God.',
     image: whatWeDoImg1,
+    body: [
+      'Depth in Christ is formed in the quiet places before it is seen on public platforms. Real growth happens when prayer, scripture, and obedience become daily patterns.',
+      'At Kairos, we challenge believers to build structure around their faith. Consistency in small spiritual disciplines creates resilience for larger responsibilities.',
+      'The goal is not noise or trends. The goal is maturity, clarity, and a life that reflects Christ in private and public.',
+    ],
   },
   {
     category: 'Faith & Culture',
     title: 'Living Faith in a Modern World',
     excerpt: 'Conversations on navigating media, career, creativity, and culture without compromising your convictions.',
     image: aboutImg15,
+    body: [
+      'Believers are called to engage culture, not escape it. The challenge is to participate without losing conviction.',
+      'Whether in media, technology, business, or the arts, faith must shape values, decision-making, and the way we treat people.',
+      'We believe relevance and holiness can coexist when identity in Christ remains the foundation.',
+    ],
   },
   {
     category: 'Leadership & Purpose',
     title: 'Called to Lead with Clarity',
     excerpt: 'Insights to help you understand your calling, build character, and lead yourself and others with wisdom and integrity.',
     image: truthDisciplineImg,
+    body: [
+      'Leadership begins with self-leadership. Before influencing others, a leader must first develop discipline, humility, and accountability.',
+      'Purpose is not discovered in pressure alone; it is refined through prayer, mentorship, and faithful stewardship of present assignments.',
+      'Clarity in calling produces courage, and courage guided by character creates lasting impact.',
+    ],
   },
   {
     category: 'Community & Formation',
     title: 'We Grow Better Together',
     excerpt: 'Stories, lessons, and guidance on accountability, intentional relationships, and building a faith-driven community.',
     image: whatWeDoImg4,
+    body: [
+      'Spiritual growth is personal, but it is never meant to be isolated. God forms people in community.',
+      'Intentional relationships provide correction, encouragement, and perspective in seasons of growth and transition.',
+      'When believers commit to healthy community, they become stronger, wiser, and more fruitful together.',
+    ],
   },
 ];
 
-const RECENT_STORIES = [...STORY_TEMPLATES, ...STORY_TEMPLATES, ...STORY_TEMPLATES];
+function toStorySlug(title, index) {
+  return `${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}-${index + 1}`;
+}
+
+const RECENT_STORIES = [...STORY_TEMPLATES, ...STORY_TEMPLATES, ...STORY_TEMPLATES].map((story, index) => ({
+  ...story,
+  id: `story-${index + 1}`,
+  slug: toStorySlug(story.title, index),
+  author: 'Chikezie Ndubuisi',
+  date: '5th Feb 2026',
+  readTime: '5 mins read',
+  avatar: convenerImg,
+}));
+
+function formatPublishedDate(value) {
+  if (!value) return 'Recently';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Recently';
+  return date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+
+function mapFeedStoryToUi(story, index) {
+  const categories = Array.isArray(story?.categories) && story.categories.length > 0
+    ? story.categories
+    : [story?.category].filter(Boolean);
+  const primaryCategory = categories[0] || 'Spiritual Growth';
+  const excerpt = story?.excerpt || '';
+
+  return {
+    id: story?.id || `feed-story-${index + 1}`,
+    slug: story?.slug || toStorySlug(story?.title || `story-${index + 1}`, index),
+    title: story?.title || 'Untitled Story',
+    excerpt,
+    body: excerpt ? [excerpt] : [''],
+    image: story?.coverImageUrl || blogHeroImg,
+    category: primaryCategory,
+    categories,
+    author: story?.author?.fullName || 'Kairos Team',
+    avatar: story?.author?.avatarUrl || convenerImg,
+    date: formatPublishedDate(story?.publishedAt || story?.createdAt),
+    readTime: story?.readTime || '5 mins read',
+  };
+}
+
+function useBlogFeedStories() {
+  const [stories, setStories] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function loadStories() {
+      setIsLoading(true);
+      setError('');
+      try {
+        const response = await fetch(BLOG_FEED_ENDPOINT);
+        if (!response.ok) throw new Error('Unable to load blog feed');
+        const payload = await response.json();
+        const feedStories = Array.isArray(payload?.data) ? payload.data : [];
+        if (!isCancelled) {
+          setStories(feedStories.map(mapFeedStoryToUi));
+        }
+      } catch (err) {
+        if (!isCancelled) {
+          setStories([]);
+          setError('Could not load live stories.');
+        }
+      } finally {
+        if (!isCancelled) setIsLoading(false);
+      }
+    }
+
+    loadStories();
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  return { stories, isLoading, error };
+}
+
+function useBlogTopHeaderStory() {
+  const [topHeaderStory, setTopHeaderStory] = useState(null);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function loadTopHeaderStory() {
+      try {
+        const response = await fetch(BLOG_TOP_HEADER_ENDPOINT);
+        if (!response.ok) throw new Error('Unable to load top header story');
+        const payload = await response.json();
+        const rawStory = payload?.data || payload;
+        if (!isCancelled && rawStory && typeof rawStory === 'object') {
+          setTopHeaderStory(mapFeedStoryToUi(rawStory, 0));
+        }
+      } catch (err) {
+        if (!isCancelled) setTopHeaderStory(null);
+      }
+    }
+
+    loadTopHeaderStory();
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  return { topHeaderStory };
+}
 
 const SEMICIRCLE_RADIUS = 480;
 const SEMICIRCLE_CX = 500;
@@ -660,6 +796,31 @@ function TeamContactPage() {
 }
 
 function BlogPage() {
+  const { stories, isLoading, error } = useBlogFeedStories();
+  const { topHeaderStory } = useBlogTopHeaderStory();
+  const [activeCategory, setActiveCategory] = useState('All');
+  const tabCategories = ['All', ...Array.from(
+    new Set(
+      stories
+        .flatMap((story) => (Array.isArray(story.categories) && story.categories.length > 0
+          ? story.categories
+          : [story.category]))
+        .filter(Boolean)
+    )
+  )];
+  const filteredStories = activeCategory === 'All'
+    ? stories
+    : stories.filter((story) => (
+      story.category === activeCategory
+      || (Array.isArray(story.categories) && story.categories.includes(activeCategory))
+    ));
+
+  useEffect(() => {
+    if (!tabCategories.includes(activeCategory)) {
+      setActiveCategory('All');
+    }
+  }, [tabCategories, activeCategory]);
+
   return (
     <div className="landing blog-page">
       <NavBar />
@@ -678,25 +839,27 @@ function BlogPage() {
             </p>
           </div>
 
-          <article className="blog-featured">
-            <img src={blogHeroImg} alt="Kairos Summit audience at Remnants Reborn gathering" className="blog-featured__image" />
-            <div className="blog-featured__overlay">
-              <h2 className="blog-featured__headline">
-                <span className="highlight-gold">Remnants Reborn:</span> A Call to Alignment and Responsibility
-              </h2>
-              <p className="blog-featured__excerpt">
-                Kairos Summit 2025, themed Remnants Reborn, is a gathering focused on revival, identity, and bold faith, bringing believers together this November in Port Harcourt for worship, teaching, and lasting transformation.
-              </p>
-              <div className="blog-featured__meta">
-                <span className="blog-featured__author">
-                  <span className="blog-featured__author-dot" aria-hidden />
-                  Chikezie Ndubuisi
-                </span>
-                <span className="blog-featured__date">5th Feb 2026</span>
-                <span className="blog-featured__tag">update</span>
+          {topHeaderStory ? (
+            <article className="blog-featured">
+              <img src={topHeaderStory.image || blogHeroImg} alt={topHeaderStory.title || 'Featured Kairos story'} className="blog-featured__image" />
+              <div className="blog-featured__overlay">
+                <h2 className="blog-featured__headline">
+                  <span className="highlight-gold">{topHeaderStory.title}</span>
+                </h2>
+                <p className="blog-featured__excerpt">
+                  {topHeaderStory.excerpt}
+                </p>
+                <div className="blog-featured__meta">
+                  <span className="blog-featured__author">
+                    <span className="blog-featured__author-dot" aria-hidden />
+                    {topHeaderStory.author}
+                  </span>
+                  <span className="blog-featured__date">{topHeaderStory.date}</span>
+                  <span className="blog-featured__tag">update</span>
+                </div>
               </div>
-            </div>
-          </article>
+            </article>
+          ) : null}
         </section>
 
         <section className="blog-stories section section--white">
@@ -711,13 +874,14 @@ function BlogPage() {
             </div>
             <div className="blog-stories__top-row">
               <div className="blog-stories__tabs" role="tablist" aria-label="Story categories">
-                {STORY_CATEGORIES.map((category, index) => (
+                {tabCategories.map((category) => (
                   <button
                     key={category}
                     type="button"
-                    className={`blog-stories__tab ${index === 0 ? 'blog-stories__tab--active' : ''}`}
+                    className={`blog-stories__tab ${activeCategory === category ? 'blog-stories__tab--active' : ''}`}
                     role="tab"
-                    aria-selected={index === 0}
+                    aria-selected={activeCategory === category}
+                    onClick={() => setActiveCategory(category)}
                   >
                     {category}
                   </button>
@@ -730,22 +894,278 @@ function BlogPage() {
             </div>
           </div>
 
+          {isLoading ? <p className="blog-stories__status">Loading stories...</p> : null}
+          {error ? <p className="blog-stories__status">{error}</p> : null}
+          {!isLoading && !error && filteredStories.length === 0 ? <p className="blog-stories__status">No stories available for this category.</p> : null}
           <div className="blog-stories__grid">
-            {RECENT_STORIES.map((story, index) => (
-              <article key={`${story.title}-${index}`} className="story-card">
+            {filteredStories.map((story) => (
+              <Link key={story.id} to={`/blog/${story.slug}`} className="story-card" aria-label={`Read story: ${story.title}`}>
                 <img src={story.image} alt={story.title} className="story-card__image" />
                 <p className="story-card__category">{story.category}</p>
                 <h3 className="story-card__title">{story.title}</h3>
                 <p className="story-card__excerpt">{story.excerpt}</p>
                 <div className="story-card__meta">
                   <span className="story-card__author">
-                    <img src={convenerImg} alt="" aria-hidden className="story-card__avatar" />
-                    Chikezie Ndubuisi
+                    <img src={story.avatar || convenerImg} alt="" aria-hidden className="story-card__avatar" />
+                    {story.author}
                   </span>
-                  <span className="story-card__time">5mins read</span>
+                  <span className="story-card__time">{story.readTime}</span>
                 </div>
-              </article>
+              </Link>
             ))}
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
+
+function BlogStoryPage() {
+  const { storySlug } = useParams();
+  const { stories, isLoading } = useBlogFeedStories();
+  const story = stories.find((item) => item.slug === storySlug);
+  const [commentName, setCommentName] = useState('');
+  const [commentReply, setCommentReply] = useState('');
+  const [isCommentSubmitting, setIsCommentSubmitting] = useState(false);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
+  const [comments, setComments] = useState([]);
+
+  const mapApiCommentToUi = (comment, index) => ({
+    id: comment?.id || `comment-${index + 1}`,
+    name: comment?.authorName || 'Anonymous',
+    reply: comment?.content || '',
+    date: comment?.timeAgo || formatPublishedDate(comment?.createdAt),
+  });
+
+  useEffect(() => {
+    if (!story) return;
+    let isCancelled = false;
+
+    async function loadComments() {
+      setIsCommentsLoading(true);
+      try {
+        let response = await fetch(`${BLOG_API_BASE_URL}/api/blogs/${encodeURIComponent(story.slug)}/comments`);
+        if (!response.ok && story.id) {
+          response = await fetch(`${BLOG_API_BASE_URL}/api/blogs/${encodeURIComponent(story.id)}/comments`);
+        }
+        if (!response.ok) throw new Error('Unable to load comments');
+        const payload = await response.json();
+        const apiComments = Array.isArray(payload?.data) ? payload.data : [];
+        if (!isCancelled) {
+          setComments(apiComments.map(mapApiCommentToUi));
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          setComments([]);
+        }
+      } finally {
+        if (!isCancelled) setIsCommentsLoading(false);
+      }
+    }
+
+    loadComments();
+    return () => {
+      isCancelled = true;
+    };
+  }, [story]);
+
+  const handleCommentSubmit = async (event) => {
+    event.preventDefault();
+    if (isCommentSubmitting || !story) return;
+
+    const cleanName = commentName.trim();
+    const cleanReply = commentReply.trim();
+    if (!cleanName || !cleanReply) return;
+
+    setIsCommentSubmitting(true);
+    try {
+      const response = await fetch(
+        `${BLOG_API_BASE_URL}/api/blogs/${encodeURIComponent(story.slug)}/comments`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            authorName: cleanName,
+            content: cleanReply,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Unable to post comment');
+      }
+
+      const payload = await response.json().catch(() => null);
+      const createdComment = payload?.data
+        ? mapApiCommentToUi(payload.data, 0)
+        : {
+            id: `comment-${Date.now()}`,
+            name: cleanName,
+            reply: cleanReply,
+            date: 'Just now',
+          };
+      setComments((prev) => [
+        createdComment,
+        ...prev,
+      ]);
+      setCommentName('');
+      setCommentReply('');
+    } catch (error) {
+      // Keep UX minimal: comment box remains filled for retry.
+    } finally {
+      setIsCommentSubmitting(false);
+    }
+  };
+
+  const relatedStories = story
+    ? stories
+      .filter((item) => item.slug !== story.slug)
+      .filter((item) => {
+        const storyCategories = Array.isArray(story.categories) ? story.categories : [story.category];
+        const itemCategories = Array.isArray(item.categories) ? item.categories : [item.category];
+        return itemCategories.some((category) => storyCategories.includes(category));
+      })
+      .slice(0, 3)
+    : [];
+
+  if (isLoading) {
+    return (
+      <div className="landing blog-page blog-details-page">
+        <NavBar />
+        <main className="blog-details-main">
+          <section className="blog-details section section--white">
+            <div className="blog-details__container">
+              <h1 className="blog-details__title">Loading story...</h1>
+            </div>
+          </section>
+        </main>
+        <SiteFooter />
+      </div>
+    );
+  }
+
+  if (!story) {
+    return (
+      <div className="landing blog-page blog-details-page">
+        <NavBar />
+        <main className="blog-details-main">
+          <section className="blog-details section section--white">
+            <div className="blog-details__container">
+              <h1 className="blog-details__title">Story not found</h1>
+              <p className="blog-details__intro">The article you are trying to open does not exist.</p>
+              <Link to="/blog" className="news__link">Back to blog <span className="link-arrow__icon" aria-hidden>→</span></Link>
+            </div>
+          </section>
+        </main>
+        <SiteFooter />
+      </div>
+    );
+  }
+
+  return (
+    <div className="landing blog-page blog-details-page">
+      <NavBar />
+      <main className="blog-details-main">
+        <section className="blog-details section section--white">
+          <div className="blog-details__container">
+            <Link to="/blog" className="news__link blog-details__back">Back to all stories <span className="link-arrow__icon" aria-hidden>→</span></Link>
+            <div className="blog-details__hero">
+              <img src={story.image} alt={story.title} className="blog-details__hero-image" />
+            </div>
+
+            <p className="blog-details__category">{story.category}</p>
+            <h1 className="blog-details__title">{story.title}</h1>
+            <div className="blog-details__meta">
+              <span className="blog-details__author">{story.author}</span>
+              <span className="blog-details__dot" aria-hidden />
+              <span className="blog-details__date">{story.date}</span>
+              <span className="blog-details__dot" aria-hidden />
+              <span className="blog-details__time">{story.readTime}</span>
+            </div>
+
+            <article className="blog-details__body">
+              {story.body.map((paragraph, index) => (
+                <p key={`${story.id}-paragraph-${index}`}>{paragraph}</p>
+              ))}
+            </article>
+
+            <section className="blog-comments">
+              <div className="blog-comments__head">
+                <h2 className="blog-comments__title">Replies and Comments</h2>
+                <p className="blog-comments__count">{comments.length} comment{comments.length === 1 ? '' : 's'}</p>
+              </div>
+
+              <form className="blog-comments__form" onSubmit={handleCommentSubmit}>
+                <label className="blog-comments__field">
+                  <span>Your Name</span>
+                  <input
+                    type="text"
+                    placeholder="Enter your name"
+                    value={commentName}
+                    onChange={(event) => setCommentName(event.target.value)}
+                  />
+                </label>
+                <label className="blog-comments__field">
+                  <span>Your Reply</span>
+                  <textarea
+                    rows={4}
+                    placeholder="Share your thoughts"
+                    value={commentReply}
+                    onChange={(event) => setCommentReply(event.target.value)}
+                  />
+                </label>
+                <button type="submit" className="btn btn--primary blog-comments__submit" disabled={isCommentSubmitting}>
+                  {isCommentSubmitting ? 'Posting...' : 'Post comment'}
+                </button>
+              </form>
+
+              <div className="blog-comments__list">
+                {isCommentsLoading ? <p className="blog-related__empty">Loading comments...</p> : null}
+                {comments.map((comment) => (
+                  <article key={comment.id} className="blog-comment">
+                    <div className="blog-comment__header">
+                      <h3 className="blog-comment__name">{comment.name}</h3>
+                      <span className="blog-comment__date">{comment.date}</span>
+                    </div>
+                    <p className="blog-comment__reply">{comment.reply}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="blog-related">
+              <div className="blog-related__head">
+                <h2 className="blog-related__title">Related Stories</h2>
+              </div>
+              {relatedStories.length > 0 ? (
+                <div className="blog-related__grid">
+                  {relatedStories.map((relatedStory) => (
+                    <Link
+                      key={relatedStory.id}
+                      to={`/blog/${relatedStory.slug}`}
+                      className="blog-related-card"
+                      aria-label={`Read related story: ${relatedStory.title}`}
+                    >
+                      <img src={relatedStory.image} alt={relatedStory.title} className="blog-related-card__image" />
+                      <div className="blog-related-card__content">
+                        <p className="blog-related-card__category">{relatedStory.category}</p>
+                        <h3 className="blog-related-card__title">{relatedStory.title}</h3>
+                        <p className="blog-related-card__excerpt">{relatedStory.excerpt}</p>
+                        <div className="blog-related-card__meta">
+                          <span>{relatedStory.author}</span>
+                          <span>{relatedStory.readTime}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className="blog-related__empty">No related stories yet.</p>
+              )}
+            </section>
           </div>
         </section>
       </main>
@@ -806,6 +1226,7 @@ function App() {
       <Route path="/team-contact" element={<TeamContactPage />} />
       <Route path="/events" element={<EventsPage />} />
       <Route path="/blog" element={<BlogPage />} />
+      <Route path="/blog/:storySlug" element={<BlogStoryPage />} />
       <Route path="/" element={
     <div className="landing">
       <NavBar />
