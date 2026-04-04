@@ -65,53 +65,6 @@ const TEAM_CONTACT_MEMBERS = [
   { img: obasImg, name: 'Obas Daniel', role: 'Creative Designer' },
 ];
 
-const STORY_TEMPLATES = [
-  {
-    category: 'Spirituality',
-    title: 'Growing Deep, Not Just Loud',
-    excerpt: 'Teachings and reflections to help you build real spiritual depth, discipline, and consistency in your walk with God.',
-    image: whatWeDoImg1,
-    body: [
-      'Depth in Christ is formed in the quiet places before it is seen on public platforms. Real growth happens when prayer, scripture, and obedience become daily patterns.',
-      'At Kairos, we challenge believers to build structure around their faith. Consistency in small spiritual disciplines creates resilience for larger responsibilities.',
-      'The goal is not noise or trends. The goal is maturity, clarity, and a life that reflects Christ in private and public.',
-    ],
-  },
-  {
-    category: 'Faith & Culture',
-    title: 'Living Faith in a Modern World',
-    excerpt: 'Conversations on navigating media, career, creativity, and culture without compromising your convictions.',
-    image: aboutImg15,
-    body: [
-      'Believers are called to engage culture, not escape it. The challenge is to participate without losing conviction.',
-      'Whether in media, technology, business, or the arts, faith must shape values, decision-making, and the way we treat people.',
-      'We believe relevance and holiness can coexist when identity in Christ remains the foundation.',
-    ],
-  },
-  {
-    category: 'Leadership & Purpose',
-    title: 'Called to Lead with Clarity',
-    excerpt: 'Insights to help you understand your calling, build character, and lead yourself and others with wisdom and integrity.',
-    image: truthDisciplineImg,
-    body: [
-      'Leadership begins with self-leadership. Before influencing others, a leader must first develop discipline, humility, and accountability.',
-      'Purpose is not discovered in pressure alone; it is refined through prayer, mentorship, and faithful stewardship of present assignments.',
-      'Clarity in calling produces courage, and courage guided by character creates lasting impact.',
-    ],
-  },
-  {
-    category: 'Community & Formation',
-    title: 'We Grow Better Together',
-    excerpt: 'Stories, lessons, and guidance on accountability, intentional relationships, and building a faith-driven community.',
-    image: whatWeDoImg4,
-    body: [
-      'Spiritual growth is personal, but it is never meant to be isolated. God forms people in community.',
-      'Intentional relationships provide correction, encouragement, and perspective in seasons of growth and transition.',
-      'When believers commit to healthy community, they become stronger, wiser, and more fruitful together.',
-    ],
-  },
-];
-
 function toStorySlug(title, index) {
   return `${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}-${index + 1}`;
 }
