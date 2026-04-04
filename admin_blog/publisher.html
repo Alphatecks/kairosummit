@@ -26,123 +26,94 @@
 
         <form id="blogPublisherForm" class="publisher__form" novalidate>
           <section class="panel">
-            <h2 class="panel__title">API Target</h2>
-            <div class="grid grid--3">
-              <label class="field">
-                <span class="field__label">Base URL</span>
-                <input id="apiBaseUrl" name="apiBaseUrl" type="url" placeholder="https://api.kairosummit.org" />
-              </label>
-              <label class="field">
-                <span class="field__label">Posts Endpoint</span>
-                <input id="apiEndpoint" name="apiEndpoint" type="text" value="/api/blog/posts" />
-              </label>
-              <label class="field">
-                <span class="field__label">Bearer Token (optional)</span>
-                <input id="apiToken" name="apiToken" type="text" placeholder="Paste JWT token if required" />
-              </label>
-            </div>
-          </section>
-
-          <section class="panel">
-            <h2 class="panel__title">Story Core</h2>
+            <h2 class="panel__title">Top Story Header</h2>
             <div class="grid grid--2">
               <label class="field">
+                <span class="field__label">Cover Image*</span>
+                <input id="topHeaderImageFile" name="topHeaderImageFile" type="file" accept="image/*" />
+              </label>
+              <label class="field">
                 <span class="field__label">Title*</span>
-                <input id="title" name="title" type="text" placeholder="Growing Deep, Not Just Loud" required />
+                <input id="topHeaderTitle" name="topHeaderTitle" type="text" placeholder="Know more Kairos? Read our blog" />
               </label>
               <label class="field">
-                <span class="field__label">Slug*</span>
-                <input id="slug" name="slug" type="text" placeholder="growing-deep-not-just-loud" required />
-              </label>
-              <label class="field">
-                <span class="field__label">Category*</span>
-                <select id="category" name="category" required>
-                  <option value="">Select category</option>
-                  <option value="Spirituality">Spirituality</option>
-                  <option value="Faith & Culture">Faith & Culture</option>
-                  <option value="Leadership & Purpose">Leadership & Purpose</option>
-                  <option value="Community & Formation">Community & Formation</option>
-                </select>
-              </label>
-              <label class="field">
-                <span class="field__label">Tag</span>
-                <input id="tag" name="tag" type="text" value="update" />
-              </label>
-            </div>
-          </section>
-
-          <section class="panel">
-            <h2 class="panel__title">Media and Meta</h2>
-            <div class="grid grid--3">
-              <label class="field">
-                <span class="field__label">Featured Image URL*</span>
-                <input id="imageUrl" name="imageUrl" type="url" placeholder="https://..." required />
-              </label>
-              <label class="field">
-                <span class="field__label">Author Name*</span>
-                <input id="author" name="author" type="text" value="Chikezie Ndubuisi" required />
-              </label>
-              <label class="field">
-                <span class="field__label">Author Avatar URL (optional)</span>
-                <input id="authorAvatarUrl" name="authorAvatarUrl" type="url" placeholder="https://..." />
-              </label>
-              <label class="field">
-                <span class="field__label">Display Date*</span>
-                <input id="date" name="date" type="text" placeholder="5th Feb 2026" required />
-              </label>
-              <label class="field">
-                <span class="field__label">Read Time*</span>
-                <input id="readTime" name="readTime" type="text" value="5 mins read" required />
+                <span class="field__label">Excerpt*</span>
+                <textarea id="topHeaderExcerpt" name="topHeaderExcerpt" rows="3" placeholder="Kairos Summit 2025..."></textarea>
               </label>
               <label class="field">
                 <span class="field__label">Status*</span>
-                <select id="status" name="status" required>
+                <select id="topHeaderStatus" name="topHeaderStatus">
+                  <option value="published">Published</option>
+                  <option value="draft">Draft</option>
+                </select>
+              </label>
+              <label class="field" style="grid-column: 1 / -1;">
+                <span class="field__label">Content*</span>
+                <textarea id="topHeaderContent" name="topHeaderContent" rows="5" placeholder="Full body..."></textarea>
+              </label>
+            </div>
+            <div class="panel__actions">
+              <button type="button" id="publishTopHeaderBtn" class="btn btn--primary">Publish Top Story Header</button>
+              <p id="topHeaderMessage" class="message" aria-live="polite"></p>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2 class="panel__title">Blog Payload (/api/blogs)</h2>
+            <div class="grid grid--3">
+              <label class="field">
+                <span class="field__label">Title*</span>
+                <input id="postTitle" name="postTitle" type="text" placeholder="Growing Deep, Not Just Loud" required />
+              </label>
+              <label class="field">
+                <span class="field__label">Category*</span>
+                <select id="postCategory" name="postCategory" required>
+                  <option value="">Select category</option>
+                  <option value="Spiritual Growth">Spiritual Growth</option>
+                  <option value="Faith & Culture">Faith & Culture</option>
+                  <option value="Leadership">Leadership</option>
+                  <option value="Purpose">Purpose</option>
+                  <option value="Community">Community</option>
+                  <option value="Formation">Formation</option>
+                </select>
+              </label>
+              <label class="field">
+                <span class="field__label">Status*</span>
+                <select id="postStatus" name="postStatus" required>
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
                 </select>
               </label>
-            </div>
-            <div class="toggle-row">
-              <label class="check">
-                <input id="isFeatured" name="isFeatured" type="checkbox" />
-                <span>Show as Featured Story on top of blog page</span>
+              <label class="field">
+                <span class="field__label">Cover Image*</span>
+                <input id="postCoverImageFile" name="postCoverImageFile" type="file" accept="image/*" required />
               </label>
             </div>
-          </section>
-
-          <section class="panel">
-            <h2 class="panel__title">Content Blocks</h2>
             <label class="field">
-              <span class="field__label">Excerpt (for card + featured overlay)*</span>
-              <textarea id="excerpt" name="excerpt" rows="3" placeholder="Short summary..." required></textarea>
+              <span class="field__label">Excerpt*</span>
+              <textarea id="postExcerpt" name="postExcerpt" rows="3" placeholder="Teachings and reflections to help you build spiritual depth." required></textarea>
             </label>
             <label class="field">
-              <span class="field__label">Body Paragraphs* (one paragraph per line)</span>
-              <textarea
-                id="body"
-                name="body"
-                rows="8"
-                placeholder="Paragraph 1&#10;Paragraph 2&#10;Paragraph 3"
-                required
-              ></textarea>
+              <span class="field__label">Content*</span>
+              <textarea id="postContent" name="postContent" rows="8" placeholder="Full post body here..." required></textarea>
             </label>
           </section>
 
           <section class="panel">
-            <h2 class="panel__title">Optional Seed Comments</h2>
-            <p class="panel__help">
-              For initial story page comments. Add one per line using format:
-              <code>Name|Comment text|2 days ago</code>
-            </p>
-            <label class="field">
-              <span class="field__label">Comments Seed</span>
-              <textarea id="seedComments" name="seedComments" rows="4" placeholder="Ada|Great post|2 days ago"></textarea>
-            </label>
-          </section>
-
-          <section class="panel">
-            <h2 class="panel__title">Live Payload Preview</h2>
-            <pre id="payloadPreview" class="payload"></pre>
+            <h2 class="panel__title">Live Content Preview</h2>
+            <article class="preview-card" id="payloadPreview">
+              <div class="preview-card__media-wrap">
+                <img id="previewCoverImage" class="preview-card__media" alt="Cover preview" />
+              </div>
+              <div class="preview-card__body">
+                <p id="previewCategory" class="preview-card__category">Category</p>
+                <h3 id="previewTitle" class="preview-card__title">Post title preview</h3>
+                <p id="previewExcerpt" class="preview-card__excerpt">Excerpt preview</p>
+                <div id="previewTags" class="preview-card__tags"></div>
+                <p id="previewStatus" class="preview-card__status">Status: draft</p>
+                <p id="previewContent" class="preview-card__content"></p>
+              </div>
+            </article>
           </section>
 
           <div class="actions">

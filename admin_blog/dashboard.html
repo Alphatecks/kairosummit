@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kairos Blogger Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./dashboard.css" />
+  </head>
+  <body>
+    <main class="dashboard">
+      <section class="dashboard__shell">
+        <header class="dashboard__header">
+          <div>
+            <p class="dashboard__eyebrow">Kairos Summit</p>
+            <h1 class="dashboard__title">Blogger Dashboard</h1>
+            <p class="dashboard__subtitle">Monitor visits, manage blogs, and review comments per post.</p>
+          </div>
+          <div class="dashboard__header-actions">
+            <a href="./publisher.html" class="btn btn--ghost">Open Publisher</a>
+            <button id="logoutBtn" type="button" class="btn btn--ghost">Logout</button>
+          </div>
+        </header>
+
+        <section class="dashboard__stats" aria-label="dashboard stats">
+          <article class="stat-card">
+            <p class="stat-card__label">Total Blog Visits</p>
+            <p id="totalVisits" class="stat-card__value">--</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-card__label">Total Blogs</p>
+            <p id="totalBlogs" class="stat-card__value">--</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-card__label">Total Comments (loaded)</p>
+            <p id="totalComments" class="stat-card__value">--</p>
+          </article>
+        </section>
+
+        <section class="panel">
+          <div class="panel__head">
+            <h2 class="panel__title">All Blogs</h2>
+            <button id="refreshBlogsBtn" type="button" class="btn btn--ghost">Refresh</button>
+          </div>
+          <p id="pageMessage" class="message" aria-live="polite"></p>
+
+          <div class="table-wrap">
+            <table class="blogs-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Published</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="blogsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <dialog id="editDialog" class="edit-dialog">
+      <form id="editBlogForm" method="dialog" class="edit-dialog__form">
+        <h3 class="edit-dialog__title">Edit Blog</h3>
+        <input id="editPostId" type="hidden" />
+        <label class="field">
+          <span>Title</span>
+          <input id="editTitle" type="text" required />
+        </label>
+        <label class="field">
+          <span>Excerpt</span>
+          <textarea id="editExcerpt" rows="3" required></textarea>
+        </label>
+        <label class="field">
+          <span>Content</span>
+          <textarea id="editContent" rows="6" required></textarea>
+        </label>
+        <label class="field">
+          <span>Status</span>
+          <select id="editStatus">
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Replace Cover Image (optional)</span>
+          <input id="editCoverImageFile" type="file" accept="image/*" />
+        </label>
+        <p id="editMessage" class="message" aria-live="polite"></p>
+        <div class="edit-dialog__actions">
+          <button id="cancelEditBtn" type="button" class="btn btn--ghost">Cancel</button>
+          <button id="saveEditBtn" type="submit" class="btn btn--primary">Save changes</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="./dashboard.js"></script>
+  </body>
+</html>

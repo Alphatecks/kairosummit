@@ -17,6 +17,8 @@ let isSubmitting = false;
 const API_BASE_URL = "https://blogger-backend-4d6s.onrender.com";
 const SIGNUP_ENDPOINT = `${API_BASE_URL}/api/auth/signup`;
 const LOGIN_ENDPOINT = `${API_BASE_URL}/api/auth/login`;
+const DASHBOARD_URL = "./dashboard.html";
+const AUTH_STORAGE_KEY = "kairos_blogger_auth";
 
 function setMessage(text, type) {
   formMessage.textContent = text;
@@ -53,6 +55,82 @@ async function parseApiResponse(response) {
   }
 
   return payload;
+}
+
+function readTokenFromPayload(payload) {
+  return (
+    (payload && payload.session && (payload.session.access_token || payload.session.accessToken || payload.session.token)) ||
+    (payload && (payload.token || payload.accessToken || payload.jwt || payload.access_token)) ||
+    (payload &&
+      payload.data &&
+      (payload.data.token || payload.data.accessToken || payload.data.jwt || payload.data.access_token)) ||
+    (payload &&
+      payload.user &&
+      (payload.user.token || payload.user.accessToken || payload.user.jwt || payload.user.access_token)) ||
+    ""
+  );
+}
+
+function readTokenTypeFromPayload(payload) {
+  return (
+    (payload && payload.session && (payload.session.token_type || payload.session.tokenType)) ||
+    payload?.token_type ||
+    payload?.tokenType ||
+    payload?.data?.token_type ||
+    payload?.data?.tokenType ||
+    "bearer"
+  );
+}
+
+function normalizeTokenType(value) {
+  const type = `${value || ""}`.trim();
+  if (!type) return "Bearer";
+  if (type.toLowerCase() === "bearer") return "Bearer";
+  return type;
+}
+
+function readTokenFromHeaders(response) {
+  const rawHeader =
+    response.headers.get("authorization") ||
+    response.headers.get("Authorization") ||
+    response.headers.get("x-access-token") ||
+    response.headers.get("X-Access-Token") ||
+    "";
+
+  if (!rawHeader) return "";
+  return rawHeader.toLowerCase().startsWith("bearer ")
+    ? rawHeader.slice(7).trim()
+    : rawHeader.trim();
+}
+
+function persistAuthSession(response, payload, email) {
+  const tokenFromPayload = readTokenFromPayload(payload);
+  const tokenFromHeaders = readTokenFromHeaders(response);
+  const token = tokenFromPayload || tokenFromHeaders || "";
+  const tokenType = normalizeTokenType(readTokenTypeFromPayload(payload));
+  const safeEmail = `${email || ""}`.trim();
+  const user =
+    (payload && payload.session && payload.session.user) ||
+    (payload && (payload.user || payload.admin)) ||
+    (payload && payload.data && (payload.data.user || payload.data.admin)) ||
+    { email: safeEmail };
+
+  localStorage.setItem(
+    AUTH_STORAGE_KEY,
+    JSON.stringify({
+      token,
+      tokenType,
+      user,
+      email: safeEmail,
+      savedAt: new Date().toISOString(),
+    })
+  );
+
+  console.log("[Admin Login] token stored:", Boolean(token), "token type:", tokenType);
+}
+
+function redirectToDashboard() {
+  window.location.assign(DASHBOARD_URL);
 }
 
 function applyAuthMode() {
@@ -148,13 +226,14 @@ form.addEventListener("submit", async (event) => {
 
     try {
       setSubmittingState(true);
-      await parseApiResponse(
-        await fetch(SIGNUP_ENDPOINT, {
-          method: "POST",
-          body: formData,
-        })
-      );
+      const signupResponse = await fetch(SIGNUP_ENDPOINT, {
+        method: "POST",
+        body: formData,
+      });
+      const signupPayload = await parseApiResponse(signupResponse);
+      persistAuthSession(signupResponse, signupPayload, email);
       setMessage("Signup successful. Redirecting to blogger dashboard...", "is-success");
+      setTimeout(redirectToDashboard, 500);
     } catch (error) {
       setMessage(error.message, "is-error");
     } finally {
@@ -165,19 +244,29 @@ form.addEventListener("submit", async (event) => {
 
   try {
     setSubmittingState(true);
-    await parseApiResponse(
-      await fetch(LOGIN_ENDPOINT, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      })
-    );
+    const loginResponse = await fetch(LOGIN_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+    let loginDebugPayload = null;
+    try {
+      loginDebugPayload = await loginResponse.clone().json();
+    } catch (error) {
+      loginDebugPayload = null;
+    }
+    console.log("[Admin Login] status:", loginResponse.status);
+    console.log("[Admin Login] authorization header:", loginResponse.headers.get("authorization"));
+    console.log("[Admin Login] payload:", loginDebugPayload);
+    const loginPayload = await parseApiResponse(loginResponse);
+    persistAuthSession(loginResponse, loginPayload, email);
     setMessage("Login successful. Redirecting to blogger dashboard...", "is-success");
+    setTimeout(redirectToDashboard, 500);
   } catch (error) {
     setMessage(error.message, "is-error");
   } finally {
