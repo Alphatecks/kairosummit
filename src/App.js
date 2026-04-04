@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Routes, Route, NavLink, Link, useLocation, useParams } from 'react-router-dom';
 import './App.css';
 
@@ -65,8 +65,6 @@ const TEAM_CONTACT_MEMBERS = [
   { img: obasImg, name: 'Obas Daniel', role: 'Creative Designer' },
 ];
 
-const STORY_CATEGORIES = ['All', 'Spiritual Growth', 'Faith & Culture', 'Leadership & Purpose', 'Community & Formation'];
-
 const STORY_TEMPLATES = [
   {
     category: 'Spirituality',
@@ -117,16 +115,6 @@ const STORY_TEMPLATES = [
 function toStorySlug(title, index) {
   return `${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}-${index + 1}`;
 }
-
-const RECENT_STORIES = [...STORY_TEMPLATES, ...STORY_TEMPLATES, ...STORY_TEMPLATES].map((story, index) => ({
-  ...story,
-  id: `story-${index + 1}`,
-  slug: toStorySlug(story.title, index),
-  author: 'Chikezie Ndubuisi',
-  date: '5th Feb 2026',
-  readTime: '5 mins read',
-  avatar: convenerImg,
-}));
 
 function formatPublishedDate(value) {
   if (!value) return 'Recently';
@@ -799,15 +787,18 @@ function BlogPage() {
   const { stories, isLoading, error } = useBlogFeedStories();
   const { topHeaderStory } = useBlogTopHeaderStory();
   const [activeCategory, setActiveCategory] = useState('All');
-  const tabCategories = ['All', ...Array.from(
-    new Set(
-      stories
-        .flatMap((story) => (Array.isArray(story.categories) && story.categories.length > 0
-          ? story.categories
-          : [story.category]))
-        .filter(Boolean)
-    )
-  )];
+  const tabCategories = useMemo(
+    () => ['All', ...Array.from(
+      new Set(
+        stories
+          .flatMap((story) => (Array.isArray(story.categories) && story.categories.length > 0
+            ? story.categories
+            : [story.category]))
+          .filter(Boolean)
+      )
+    )],
+    [stories]
+  );
   const filteredStories = activeCategory === 'All'
     ? stories
     : stories.filter((story) => (
