@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://blogger-backend-4d6s.onrender.com";
+const API_BASE_URL = "https://blogger-backend-km7w.onrender.com";
 const AUTH_STORAGE_KEY = "kairos_blogger_auth";
 
 const totalVisitsEl = document.getElementById("totalVisits");

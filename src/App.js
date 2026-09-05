@@ -6,6 +6,7 @@ import logo from './assets/images/icons/logo.svg';
 import ideaIcon from './assets/icons/idea-01.png';
 import heroBg from './assets/images/pictures/3.jpeg';
 import remnantsRebornImg from './assets/images/pictures/remnants-reborn-hero.jpg';
+import remnantsRebornBanner from './assets/images/pictures/20260902_124449.jpg';
 import whoWeAreImg from './assets/images/pictures/2.jpeg';
 import truthDisciplineImg from './assets/images/pictures/9.jpeg';
 import whatWeDoImg1 from './assets/images/pictures/8.jpeg';
@@ -28,7 +29,8 @@ import obasImg from './assets/images/pictures/obas.png';
 import blogHeroImg from './assets/images/pictures/DSC_9812.JPG';
 
 const WHATSAPP_LINK = 'https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t';
-const BLOG_API_BASE_URL = 'https://blogger-backend-4d6s.onrender.com';
+const INSTAGRAM_LINK = 'https://www.instagram.com/kairos_summit/';
+const BLOG_API_BASE_URL = 'https://blogger-backend-km7w.onrender.com';
 const BLOG_FEED_ENDPOINT = `${BLOG_API_BASE_URL}/api/blogs/feed?page=1&limit=20`;
 const BLOG_TOP_HEADER_ENDPOINT = `${BLOG_API_BASE_URL}/api/blogs/top-header`;
 
@@ -1123,16 +1125,273 @@ function EventsPage() {
     <div className="landing event-page">
       <NavBar />
       <main className="event-main">
-        <section className="event-coming section section--white">
-          <div className="event-coming__inner">
+        <section className="events-intro section section--white">
+          <div className="events-intro__grid">
+            <div className="events-intro__left">
+              <span className="about-pill">
+                <span className="about-pill__dot" aria-hidden />
+                Gatherings
+              </span>
+              <h1 className="events-intro__title">
+                We meet in rooms,<br />not just on screens.
+              </h1>
+            </div>
+            <div className="events-intro__right">
+              <p className="events-intro__text">
+                Kairos Summit gatherings are formation spaces — teaching, honest conversation, and the kind of room you leave more rooted than you arrived. The next major one is in Port Harcourt.
+              </p>
+              <Link to="/register" className="events-intro__jump">
+                Where to register <span aria-hidden>→</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="events-feature section section--white" aria-labelledby="events-feature-heading">
+          <div className="events-feature__inner">
+            <div className="events-feature__media">
+              <img src={remnantsRebornBanner} alt="Remnants Reborn — Kairos Summit, 14 November 2026 at Celebr8 Centre" />
+              <span className="events-feature__badge">Next gathering</span>
+            </div>
+            <div className="events-feature__copy">
+              <p className="events-feature__kicker">Saturday, 14 November 2026</p>
+              <h2 id="events-feature-heading" className="events-feature__name">Remnants Reborn</h2>
+              <p className="events-feature__lede">
+                The next major Kairos Summit gathering. Same assignment as always: believers who want depth, not just a night of energy. If you have been waiting for a reason to show up in person, this is it.
+              </p>
+              <dl className="events-feature__facts">
+                <div>
+                  <dt>Venue</dt>
+                  <dd>Celebr8 Centre, Olu Obasanjo Road</dd>
+                </div>
+                <div>
+                  <dt>Date</dt>
+                  <dd>14 November 2026</dd>
+                </div>
+                <div>
+                  <dt>Time</dt>
+                  <dd>8:30 AM</dd>
+                </div>
+              </dl>
+              <Link to="/register" className="events-feature__link">
+                Register for Remnants Reborn <span aria-hidden>→</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="events-register section" id="register" aria-labelledby="events-register-heading">
+          <div className="events-register__inner">
+            <div className="events-register__copy">
+              <span className="events-register__pill">Where to register</span>
+              <h2 id="events-register-heading" className="events-register__title">
+                You register here, on Kairos Summit.
+              </h2>
+              <p className="events-register__text">
+                Remnants Reborn seats are taken on this site — not in WhatsApp. The group is for staying in the conversation. Registration has its own page.
+              </p>
+              <Link to="/register" className="btn events-register__cta">
+                Register for Remnants Reborn
+              </Link>
+              <p className="events-register__note">
+                Want the community too? That still lives on
+                {' '}
+                <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                {' '}
+                and
+                {' '}
+                <a href={INSTAGRAM_LINK} target="_blank" rel="noopener noreferrer">Instagram</a>.
+                {' '}
+                It is not how you get a seat.
+              </p>
+            </div>
+            <figure className="events-register__figure">
+              <img src={aboutImg12} alt="Attendees registering at Kairos Summit 2024" />
+              <figcaption>Registration, Kairos Summit 2024</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section className="events-past section section--white" aria-labelledby="events-past-heading">
+          <div className="events-past__inner">
+            <div className="events-past__copy">
+              <span className="about-pill">
+                <span className="about-pill__dot" aria-hidden />
+                Last year
+              </span>
+              <h2 id="events-past-heading" className="events-past__title">
+                Port Harcourt, June 2024
+              </h2>
+              <p className="events-past__text">
+                The last Kairos Summit filled a hall with lanyards, notebooks, and people who stayed after the last session. Remnants Reborn is the next chapter of that same room.
+              </p>
+            </div>
+            <div className="events-past__photos">
+              <figure className="events-past__shot events-past__shot--main">
+                <img src={aboutImg13} alt="Audience at Kairos Summit 2024" />
+              </figure>
+              <figure className="events-past__shot events-past__shot--side">
+                <img src={aboutImg14} alt="Panel on stage at Kairos Summit 2024" />
+              </figure>
+              <figure className="events-past__shot events-past__shot--low">
+                <img src={aboutImg15} alt="Speaker at Kairos Summit 2024" />
+              </figure>
+            </div>
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
+
+function RegisterPage() {
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    city: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setSubmitted(true);
+  };
+
+  return (
+    <div className="landing register-page">
+      <NavBar />
+      <main className="register-main">
+        <section className="register-hero section section--white">
+          <div className="register-hero__header">
             <span className="about-pill">
               <span className="about-pill__dot" aria-hidden />
-              Events
+              Registration
             </span>
-            <h1 className="event-coming__title">
-              Events at <span className="highlight-gold">Kairos</span>
+            <h1 className="register-hero__title">
+              Register for <span className="highlight-gold">Remnants Reborn</span>
             </h1>
-            <p className="event-coming__text">Coming Soon</p>
+            <p className="register-hero__lead">
+              This is the list. Not WhatsApp, not a story reply — this page. Saturday 14 November 2026, 8:30 AM, Celebr8 Centre, Olu Obasanjo Road.
+            </p>
+          </div>
+
+          <div className="register-layout">
+            <div className="register-layout__event">
+              <img
+                src={remnantsRebornBanner}
+                alt="Remnants Reborn — 14 November 2026 at Celebr8 Centre"
+                className="register-layout__poster"
+              />
+              <dl className="register-layout__facts">
+                <div>
+                  <dt>Venue</dt>
+                  <dd>Celebr8 Centre, Olu Obasanjo Road</dd>
+                </div>
+                <div>
+                  <dt>Date</dt>
+                  <dd>14 November 2026</dd>
+                </div>
+                <div>
+                  <dt>Time</dt>
+                  <dd>8:30 AM</dd>
+                </div>
+              </dl>
+            </div>
+
+            {submitted ? (
+              <div className="register-done" role="status">
+                <p className="register-done__kicker">You&apos;re on the list</p>
+                <h2 className="register-done__title">See you in Port Harcourt.</h2>
+                <p className="register-done__text">
+                  Keep 14 November. If anything changes, Kairos Summit will reach you at the email you gave.
+                </p>
+                <Link to="/events" className="register-done__back">
+                  Back to events <span aria-hidden>→</span>
+                </Link>
+              </div>
+            ) : (
+              <form className="register-form" onSubmit={handleSubmit}>
+                <div className="register-form__row">
+                  <label className="register-form__field">
+                    <span className="register-form__label">First name</span>
+                    <input
+                      type="text"
+                      name="firstName"
+                      value={form.firstName}
+                      onChange={handleChange}
+                      placeholder="First name"
+                      autoComplete="given-name"
+                      required
+                    />
+                  </label>
+                  <label className="register-form__field">
+                    <span className="register-form__label">Last name</span>
+                    <input
+                      type="text"
+                      name="lastName"
+                      value={form.lastName}
+                      onChange={handleChange}
+                      placeholder="Last name"
+                      autoComplete="family-name"
+                      required
+                    />
+                  </label>
+                </div>
+                <label className="register-form__field">
+                  <span className="register-form__label">Email</span>
+                  <input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    placeholder="you@email.com"
+                    autoComplete="email"
+                    required
+                  />
+                </label>
+                <label className="register-form__field">
+                  <span className="register-form__label">Phone</span>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={form.phone}
+                    onChange={handleChange}
+                    placeholder="0800 000 0000"
+                    autoComplete="tel"
+                    required
+                  />
+                </label>
+                <label className="register-form__field">
+                  <span className="register-form__label">City</span>
+                  <input
+                    type="text"
+                    name="city"
+                    value={form.city}
+                    onChange={handleChange}
+                    placeholder="Port Harcourt"
+                    autoComplete="address-level2"
+                  />
+                </label>
+                <button type="submit" className="btn register-form__submit">
+                  Complete registration
+                </button>
+                <p className="register-form__aside">
+                  WhatsApp is the community, not the registration desk.
+                </p>
+              </form>
+            )}
           </div>
         </section>
       </main>
@@ -1169,6 +1428,7 @@ function App() {
       <Route path="/about" element={<AboutPage />} />
       <Route path="/team-contact" element={<TeamContactPage />} />
       <Route path="/events" element={<EventsPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route path="/blog" element={<BlogPage />} />
       <Route path="/blog/:storySlug" element={<BlogStoryPage />} />
       <Route path="/" element={

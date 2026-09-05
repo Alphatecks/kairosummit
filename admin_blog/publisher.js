@@ -27,7 +27,7 @@ const previewStatus = document.getElementById("previewStatus");
 const previewContent = document.getElementById("previewContent");
 
 const DRAFT_STORAGE_KEY = "kairos_admin_blog_draft_v2";
-const PUBLISH_API_BASE_URL = "https://blogger-backend-4d6s.onrender.com";
+const PUBLISH_API_BASE_URL = "https://blogger-backend-km7w.onrender.com";
 const PUBLISH_BLOG_ENDPOINT = "/api/blogs";
 const PUBLISH_TOP_HEADER_ENDPOINT = "/api/blogs";
 const AUTH_STORAGE_KEY = "kairos_blogger_auth";
