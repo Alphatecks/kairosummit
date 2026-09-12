@@ -33,6 +33,7 @@ const INSTAGRAM_LINK = 'https://www.instagram.com/kairos_summit/';
 const BLOG_API_BASE_URL = 'https://blogger-backend-km7w.onrender.com';
 const BLOG_FEED_ENDPOINT = `${BLOG_API_BASE_URL}/api/blogs/feed?page=1&limit=20`;
 const BLOG_TOP_HEADER_ENDPOINT = `${BLOG_API_BASE_URL}/api/blogs/top-header`;
+const REGISTER_ENDPOINT = `${BLOG_API_BASE_URL}/api/registrations`;
 
 const HERO_SLIDES = [
   {
@@ -50,7 +51,7 @@ const HERO_SLIDES = [
 ];
 
 const RAINBOW_CARDS = [
-  { img: remnantsRebornImg, title: 'Remnants Reborn.', date: 'November 15' },
+  { img: remnantsRebornImg, title: 'Remnants Reborn.', date: 'November 14' },
   { img: truthDisciplineImg, title: 'Truth & Discipline.', date: 'December 3' },
   { img: whatWeDoImg3, title: 'Community & Growth.', date: 'December 20' },
   { img: whoWeAreImg, title: 'Who We Are.', date: 'January 12' },
@@ -1245,155 +1246,284 @@ function EventsPage() {
   );
 }
 
+const REGISTER_STORAGE_KEY = 'kairos_rr_seat_2026';
+
+function makeSeatCode(firstName, lastName) {
+  const first = (firstName.trim()[0] || 'K').toUpperCase();
+  const last = (lastName.trim()[0] || 'S').toUpperCase();
+  const n = String(((firstName.trim().length * 13) + (lastName.trim().length * 7) + 26) % 90 + 10);
+  return `RR26-${first}${last}${n}`;
+}
+
 function RegisterPage() {
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
+    occupation: '',
     city: '',
+    heardFrom: '',
   });
-  const [submitted, setSubmitted] = useState(false);
+  const [ticket, setTicket] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    try {
+      const saved = window.localStorage.getItem(REGISTER_STORAGE_KEY);
+      if (saved) setTicket(JSON.parse(saved));
+    } catch {
+      setTicket(null);
+    }
   }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+    if (submitError) setSubmitError('');
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    setSubmitted(true);
+    if (isSubmitting) return;
+
+    const firstName = form.firstName.trim();
+    const lastName = form.lastName.trim();
+    const email = form.email.trim();
+    const phone = form.phone.trim();
+    const occupation = form.occupation.trim();
+    const comingFrom = form.city.trim() || 'Port Harcourt';
+    const whoToldYou = form.heardFrom.trim();
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const response = await fetch(REGISTER_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          phone,
+          occupation,
+          comingFrom,
+          whoToldYou,
+        }),
+      });
+
+      const payload = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(
+          payload?.message || payload?.error || 'Could not add your name. Try again.'
+        );
+      }
+
+      const saved = payload?.data || payload || {};
+      const nextTicket = {
+        name: `${saved.firstName || firstName} ${saved.lastName || lastName}`.replace(/\s+/g, ' '),
+        email: saved.email || email,
+        phone: saved.phone || phone,
+        occupation: saved.occupation || occupation,
+        city: saved.comingFrom || comingFrom,
+        heardFrom: saved.whoToldYou || whoToldYou,
+        code: saved.code || saved.id || makeSeatCode(firstName, lastName),
+      };
+      setTicket(nextTicket);
+      try {
+        window.localStorage.setItem(REGISTER_STORAGE_KEY, JSON.stringify(nextTicket));
+      } catch {
+        /* ignore full storage */
+      }
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Could not add your name. Try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const resetTicket = () => {
+    setTicket(null);
+    try {
+      window.localStorage.removeItem(REGISTER_STORAGE_KEY);
+    } catch {
+      /* ignore */
+    }
   };
 
   return (
     <div className="landing register-page">
       <NavBar />
       <main className="register-main">
-        <section className="register-hero section section--white">
-          <div className="register-hero__header">
-            <span className="about-pill">
-              <span className="about-pill__dot" aria-hidden />
-              Registration
-            </span>
-            <h1 className="register-hero__title">
-              Register for <span className="highlight-gold">Remnants Reborn</span>
-            </h1>
-            <p className="register-hero__lead">
-              This is the list. Not WhatsApp, not a story reply — this page. Saturday 14 November 2026, 8:30 AM, Celebr8 Centre, Olu Obasanjo Road.
+        <div className="register-desk">
+          <aside className="register-desk__stage" aria-hidden={false}>
+            <img
+              src={remnantsRebornBanner}
+              alt="Remnants Reborn — Kairos Summit, 14 November 2026 at Celebr8 Centre"
+              className="register-desk__poster"
+            />
+            <div className="register-desk__stage-fade" aria-hidden />
+            <p className="register-desk__stage-note">
+              Celebr8 Centre, Olu Obasanjo Road
+              <span>Saturday 14 November 2026 · 8:30 AM</span>
             </p>
-          </div>
+          </aside>
 
-          <div className="register-layout">
-            <div className="register-layout__event">
-              <img
-                src={remnantsRebornBanner}
-                alt="Remnants Reborn — 14 November 2026 at Celebr8 Centre"
-                className="register-layout__poster"
-              />
-              <dl className="register-layout__facts">
-                <div>
-                  <dt>Venue</dt>
-                  <dd>Celebr8 Centre, Olu Obasanjo Road</dd>
-                </div>
-                <div>
-                  <dt>Date</dt>
-                  <dd>14 November 2026</dd>
-                </div>
-                <div>
-                  <dt>Time</dt>
-                  <dd>8:30 AM</dd>
-                </div>
-              </dl>
-            </div>
+          <section className="register-desk__paper" aria-labelledby="register-heading">
+            <p className="register-desk__running">
+              Kairos Summit
+              <span aria-hidden>·</span>
+              Seat list
+              <span aria-hidden>·</span>
+              Port Harcourt
+            </p>
 
-            {submitted ? (
-              <div className="register-done" role="status">
-                <p className="register-done__kicker">You&apos;re on the list</p>
-                <h2 className="register-done__title">See you in Port Harcourt.</h2>
-                <p className="register-done__text">
-                  Keep 14 November. If anything changes, Kairos Summit will reach you at the email you gave.
-                </p>
-                <Link to="/events" className="register-done__back">
-                  Back to events <span aria-hidden>→</span>
-                </Link>
+            {ticket ? (
+              <div className="register-ticket" role="status">
+                <div className="register-ticket__stub">
+                  <p className="register-ticket__event">Remnants Reborn</p>
+                  <p className="register-ticket__code">{ticket.code}</p>
+                </div>
+                <div className="register-ticket__body">
+                  <p className="register-ticket__kicker">On the door list</p>
+                  <h1 id="register-heading" className="register-ticket__name">{ticket.name}</h1>
+                  <p className="register-ticket__copy">
+                    Saturday 14 November, 8:30 in the morning. Celebr8 Centre, Olu Obasanjo Road.
+                    If the plan shifts, we will write {ticket.email}.
+                  </p>
+                  <dl className="register-ticket__meta">
+                    <div>
+                      <dt>Phone</dt>
+                      <dd>{ticket.phone}</dd>
+                    </div>
+                    <div>
+                      <dt>Coming from</dt>
+                      <dd>{ticket.city}</dd>
+                    </div>
+                    {ticket.occupation ? (
+                      <div>
+                        <dt>Occupation</dt>
+                        <dd>{ticket.occupation}</dd>
+                      </div>
+                    ) : null}
+                  </dl>
+                  <button type="button" className="register-ticket__again" onClick={resetTicket}>
+                    Register someone else
+                  </button>
+                </div>
               </div>
             ) : (
-              <form className="register-form" onSubmit={handleSubmit}>
-                <div className="register-form__row">
-                  <label className="register-form__field">
-                    <span className="register-form__label">First name</span>
-                    <input
-                      type="text"
-                      name="firstName"
-                      value={form.firstName}
-                      onChange={handleChange}
-                      placeholder="First name"
-                      autoComplete="given-name"
-                      required
-                    />
-                  </label>
-                  <label className="register-form__field">
-                    <span className="register-form__label">Last name</span>
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={form.lastName}
-                      onChange={handleChange}
-                      placeholder="Last name"
-                      autoComplete="family-name"
-                      required
-                    />
-                  </label>
-                </div>
-                <label className="register-form__field">
-                  <span className="register-form__label">Email</span>
-                  <input
-                    type="email"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    placeholder="you@email.com"
-                    autoComplete="email"
-                    required
-                  />
-                </label>
-                <label className="register-form__field">
-                  <span className="register-form__label">Phone</span>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={form.phone}
-                    onChange={handleChange}
-                    placeholder="0800 000 0000"
-                    autoComplete="tel"
-                    required
-                  />
-                </label>
-                <label className="register-form__field">
-                  <span className="register-form__label">City</span>
-                  <input
-                    type="text"
-                    name="city"
-                    value={form.city}
-                    onChange={handleChange}
-                    placeholder="Port Harcourt"
-                    autoComplete="address-level2"
-                  />
-                </label>
-                <button type="submit" className="btn register-form__submit">
-                  Complete registration
-                </button>
-                <p className="register-form__aside">
-                  WhatsApp is the community, not the registration desk.
+              <>
+                <h1 id="register-heading" className="register-desk__title">
+                  Take a seat.
+                </h1>
+                <p className="register-desk__lead">
+                  Write your name here if you are coming on Saturday. This is the list we will use at Celebr8 — not WhatsApp, not a story reply.
                 </p>
-              </form>
+
+                <form className="register-sheet" onSubmit={handleSubmit}>
+                  <div className="register-sheet__rule" aria-hidden />
+                  <div className="register-sheet__row">
+                    <label className="register-sheet__field">
+                      <span>First name</span>
+                      <input
+                        type="text"
+                        name="firstName"
+                        value={form.firstName}
+                        onChange={handleChange}
+                        autoComplete="given-name"
+                        required
+                      />
+                    </label>
+                    <label className="register-sheet__field">
+                      <span>Last name</span>
+                      <input
+                        type="text"
+                        name="lastName"
+                        value={form.lastName}
+                        onChange={handleChange}
+                        autoComplete="family-name"
+                        required
+                      />
+                    </label>
+                  </div>
+                  <label className="register-sheet__field">
+                    <span>Email</span>
+                    <input
+                      type="email"
+                      name="email"
+                      value={form.email}
+                      onChange={handleChange}
+                      autoComplete="email"
+                      required
+                    />
+                  </label>
+                  <label className="register-sheet__field">
+                    <span>Phone <em>WhatsApp preferred</em></span>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={form.phone}
+                      onChange={handleChange}
+                      autoComplete="tel"
+                      required
+                    />
+                  </label>
+                  <label className="register-sheet__field">
+                    <span>Occupation</span>
+                    <input
+                      type="text"
+                      name="occupation"
+                      value={form.occupation}
+                      onChange={handleChange}
+                      autoComplete="organization-title"
+                      required
+                    />
+                  </label>
+                  <div className="register-sheet__row">
+                    <label className="register-sheet__field">
+                      <span>Coming from</span>
+                      <input
+                        type="text"
+                        name="city"
+                        value={form.city}
+                        onChange={handleChange}
+                        placeholder="Port Harcourt"
+                        autoComplete="address-level2"
+                      />
+                    </label>
+                    <label className="register-sheet__field">
+                      <span>Who told you? <em>optional</em></span>
+                      <input
+                        type="text"
+                        name="heardFrom"
+                        value={form.heardFrom}
+                        onChange={handleChange}
+                        placeholder="A friend, church, Instagram…"
+                      />
+                    </label>
+                  </div>
+                  {submitError ? (
+                    <p className="register-sheet__error" role="alert">{submitError}</p>
+                  ) : null}
+                  <button type="submit" className="register-sheet__submit" disabled={isSubmitting}>
+                    {isSubmitting ? 'Adding your name…' : 'Put my name on the list'}
+                  </button>
+                </form>
+
+                <ul className="register-aside">
+                  <li>Doors from 8:30. Come early if you want a seat near the front.</li>
+                  <li>Last June this hall filled up. Write your name if you want a place this time.</li>
+                </ul>
+              </>
             )}
-          </div>
-        </section>
+          </section>
+        </div>
       </main>
       <SiteFooter />
     </div>
@@ -1460,21 +1590,22 @@ function App() {
           </div>
         </div>
         <div className="hero__cta">
-          <a href="https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t" className="btn btn--primary" target="_blank" rel="noopener noreferrer">Join our community</a>
-          <a href="/about" className="btn btn--gold">Learn more <img src={ideaIcon} alt="" className="btn__icon btn__icon--bulb" width={20} height={20} aria-hidden /></a>
+          <Link to="/register" className="btn btn--primary">Register for event</Link>
+          <a href={WHATSAPP_LINK} className="btn btn--gold">Join community</a>
         </div>
-        <div className="hero__event-box">
+        <Link to="/register" className="hero__event-box">
           <div className="hero__event-media">
-            <img src={remnantsRebornImg} alt="Remnants Reborn" className="hero__event-thumb" />
+            <img src={remnantsRebornImg} alt="" className="hero__event-thumb" />
           </div>
           <div className="hero__event-text">
             <p className="hero__event-title">
-            <span className="hero__event-label">Upcoming Major event :</span>{' '}
-            <span className="hero__event-name">Remnants Reborn</span>
-          </p>
-            <p className="hero__event-meta">November 15th 2026 in Port Harcourt,</p>
+              <span className="hero__event-label">Upcoming major event</span>{' '}
+              <span className="hero__event-name">Remnants Reborn</span>
+            </p>
+            <p className="hero__event-meta">14 November 2026 · Port Harcourt</p>
+            <span className="hero__event-action">Register for a seat</span>
           </div>
-        </div>
+        </Link>
       </section>
 
       {/* ----- WHO WE ARE ----- */}
