@@ -30,7 +30,7 @@ import blogHeroImg from './assets/images/pictures/DSC_9812.JPG';
 
 const WHATSAPP_LINK = 'https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t';
 const INSTAGRAM_LINK = 'https://www.instagram.com/kairos_summit/';
-const BLOG_API_BASE_URL = 'https://blogger-backend-km7w.onrender.com';
+const BLOG_API_BASE_URL = 'https://blogger-backend-km7w.onrender.com'; // live Render API
 const BLOG_FEED_ENDPOINT = `${BLOG_API_BASE_URL}/api/blogs/feed?page=1&limit=20`;
 const BLOG_TOP_HEADER_ENDPOINT = `${BLOG_API_BASE_URL}/api/blogs/top-header`;
 const REGISTER_ENDPOINT = `${BLOG_API_BASE_URL}/api/registrations`;
