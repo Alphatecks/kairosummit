@@ -50,9 +50,6 @@ import tshirtOliveImg from './assets/images/merch/tshirt-olive.jpg';
 import tshirtMaroonImg from './assets/images/merch/tshirt-maroon.jpg';
 import capBlackImg from './assets/images/merch/cap-black.jpg';
 import capWhiteImg from './assets/images/merch/cap-white.jpg';
-import capNavyImg from './assets/images/merch/cap-navy.jpg';
-import capOliveImg from './assets/images/merch/cap-olive.jpg';
-import capMaroonImg from './assets/images/merch/cap-maroon.jpg';
 
 const WHATSAPP_LINK = 'https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t';
 const EVENT_START = '2026-11-14T10:00:00+01:00'; // Remnants Reborn, 10:00 AM WAT
@@ -129,11 +126,13 @@ const PREVIOUS_SPEAKERS = [
   { id: 'previous-6', name: 'Oluchi Keme', role: 'Co-Host', img: pastOluchiKemeImg },
 ];
 
-// Swatches are sampled off the mockups, and each colour carries the photo the
-// gallery shows when it is picked. Adjust prices as stock is confirmed.
+// `slug` and the colour ids have to match /api/shop/products, since checkout
+// rejects anything else. Swatches are sampled off the mockups, and each colour
+// carries the photo the gallery shows when it is picked.
 const SHOP_PRODUCTS = [
   {
     id: 'tshirt',
+    slug: 'official-tshirt',
     name: 'Kairos Summit Official T-Shirt',
     tagline: 'Equipping, imparting, activating and connecting kingdom creatives',
     price: 8000,
@@ -143,36 +142,29 @@ const SHOP_PRODUCTS = [
       { id: 'white', label: 'White', swatch: '#f1f1ef', img: tshirtWhiteImg },
       { id: 'navy', label: 'Navy', swatch: '#1d2130', img: tshirtNavyImg },
       { id: 'olive', label: 'Olive', swatch: '#3c3f31', img: tshirtOliveImg },
-      { id: 'maroon', label: 'Oxblood', swatch: '#2f1616', img: tshirtMaroonImg },
+      { id: 'brown', label: 'Brown', swatch: '#2f1616', img: tshirtMaroonImg },
     ],
     sizes: ['M', 'L', 'XL', 'XXL', 'XXXL'],
   },
   {
     id: 'cap',
+    slug: 'face-cap',
     name: 'Kairos Summit Face Cap',
     tagline: 'Everyday cover for the remnant',
     price: 4000,
     tabLabel: 'Face Cap',
     colours: [
       {
-        id: 'black-gold',
-        label: 'Black and Gold',
+        id: 'black',
+        label: 'Black',
         swatch: 'linear-gradient(160deg, #161616 0 58%, #deb04f 58%)',
         img: capBlackImg,
       },
       {
         id: 'white',
-        label: 'White and Charcoal',
+        label: 'White',
         swatch: 'linear-gradient(160deg, #f1f1ef 0 58%, #373737 58%)',
         img: capWhiteImg,
-      },
-      { id: 'navy', label: 'Navy', swatch: '#23252e', img: capNavyImg },
-      { id: 'olive', label: 'Olive', swatch: '#2f322c', img: capOliveImg },
-      {
-        id: 'maroon-gold',
-        label: 'Oxblood and Gold',
-        swatch: 'linear-gradient(160deg, #2c1b1b 0 58%, #deb04f 58%)',
-        img: capMaroonImg,
       },
     ],
     sizes: [],
@@ -189,8 +181,9 @@ const VOLUNTEER_AREAS = [
 ];
 const VOLUNTEER_AVAILABILITY = ['Full Day', 'Morning Only', 'Afternoon Only'];
 
-const PAYSTACK_PUBLIC_KEY = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY || '';
-const PAYSTACK_SCRIPT_SRC = 'https://js.paystack.co/v1/inline.js';
+const SHOP_CHECKOUT_ENDPOINT = `${BLOG_API_BASE_URL}/api/shop/checkout`;
+const SHOP_VERIFY_ENDPOINT = `${BLOG_API_BASE_URL}/api/shop/verify`;
+const SHOP_CALLBACK_PATH = '/shop/payment-complete';
 const WHATSAPP_ORDER_NUMBER = '2349136543580';
 
 const TEAM_CONTACT_MEMBERS = [
@@ -1560,12 +1553,6 @@ function formatNaira(amount) {
   return `\u20a6${amount.toLocaleString('en-NG')}`;
 }
 
-function makeOrderReference() {
-  const stamp = Date.now().toString(36).toUpperCase();
-  const noise = Math.random().toString(36).slice(2, 6).toUpperCase();
-  return `KS-${stamp}-${noise}`;
-}
-
 function ShopPage() {
   const [productId, setProductId] = useState(SHOP_PRODUCTS[0].id);
   const product = SHOP_PRODUCTS.find((item) => item.id === productId) || SHOP_PRODUCTS[0];
@@ -1576,35 +1563,14 @@ function ShopPage() {
   const [stage, setStage] = useState('options');
   const [buyer, setBuyer] = useState({ name: '', email: '', phone: '', address: '' });
   const [formError, setFormError] = useState('');
-  const [isPaymentReady, setIsPaymentReady] = useState(false);
-  const [placedOrder, setPlacedOrder] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showWhatsAppFallback, setShowWhatsAppFallback] = useState(false);
 
   const colour = product.colours.find((item) => item.id === colourId) || product.colours[0];
   const subtotal = useMemo(() => product.price * quantity, [product.price, quantity]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    if (!PAYSTACK_PUBLIC_KEY) return undefined;
-    if (window.PaystackPop) {
-      setIsPaymentReady(true);
-      return undefined;
-    }
-
-    const existing = document.querySelector(`script[src="${PAYSTACK_SCRIPT_SRC}"]`);
-    const script = existing || document.createElement('script');
-    const onReady = () => setIsPaymentReady(true);
-
-    script.addEventListener('load', onReady);
-    if (!existing) {
-      script.src = PAYSTACK_SCRIPT_SRC;
-      script.async = true;
-      document.body.appendChild(script);
-    }
-
-    return () => script.removeEventListener('load', onReady);
   }, []);
 
   function selectProduct(nextId) {
@@ -1618,7 +1584,7 @@ function ShopPage() {
     setFormError('');
   }
 
-  function orderSummaryText(reference) {
+  const whatsAppOrderLink = useMemo(() => {
     const lines = [
       'New Kairos Summit merch order',
       `Item: ${product.name}`,
@@ -1626,18 +1592,12 @@ function ShopPage() {
       product.sizes.length ? `Size: ${size}` : null,
       `Quantity: ${quantity}`,
       `Subtotal: ${formatNaira(subtotal)}`,
-      reference ? `Reference: ${reference}` : null,
       buyer.name ? `Name: ${buyer.name}` : null,
       buyer.phone ? `Phone: ${buyer.phone}` : null,
       buyer.address ? `Deliver to: ${buyer.address}` : null,
-    ];
-    return lines.filter(Boolean).join('\n');
-  }
-
-  function openWhatsAppOrder(reference) {
-    const url = `https://wa.me/${WHATSAPP_ORDER_NUMBER}?text=${encodeURIComponent(orderSummaryText(reference))}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
-  }
+    ].filter(Boolean);
+    return `https://wa.me/${WHATSAPP_ORDER_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`;
+  }, [product, colour, size, quantity, subtotal, buyer]);
 
   function handleProceed() {
     if (product.sizes.length && !size) {
@@ -1652,7 +1612,7 @@ function ShopPage() {
     setBuyer((prev) => ({ ...prev, [field]: value }));
   }
 
-  function handleCheckout(event) {
+  async function handleCheckout(event) {
     event.preventDefault();
     const name = buyer.name.trim();
     const email = buyer.email.trim();
@@ -1665,54 +1625,42 @@ function ShopPage() {
     }
 
     setFormError('');
-    const reference = makeOrderReference();
-    const order = {
-      reference,
-      item: product.name,
-      colour: colour.label,
-      size: product.sizes.length ? size : '',
-      quantity,
-      subtotal,
-    };
+    setShowWhatsAppFallback(false);
+    setIsSubmitting(true);
 
-    if (!PAYSTACK_PUBLIC_KEY || !isPaymentReady || !window.PaystackPop) {
-      openWhatsAppOrder(reference);
-      return;
+    try {
+      const response = await fetch(SHOP_CHECKOUT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          productSlug: product.slug,
+          colour: colour.id,
+          ...(product.sizes.length ? { size } : {}),
+          quantity,
+          fullName: name,
+          email,
+          phone,
+          deliveryAddress: address,
+          callbackUrl: `${window.location.origin}${SHOP_CALLBACK_PATH}`,
+        }),
+      });
+
+      const payload = await response.json().catch(() => null);
+      const authorizationUrl = payload?.data?.authorizationUrl;
+
+      if (!response.ok || !authorizationUrl) {
+        setFormError(payload?.message || 'We could not start the payment. Please try again.');
+        setShowWhatsAppFallback(true);
+        setIsSubmitting(false);
+        return;
+      }
+
+      window.location.assign(authorizationUrl);
+    } catch (error) {
+      setFormError('We could not reach the payment service. Check your connection and try again.');
+      setShowWhatsAppFallback(true);
+      setIsSubmitting(false);
     }
-
-    const handler = window.PaystackPop.setup({
-      key: PAYSTACK_PUBLIC_KEY,
-      email,
-      amount: subtotal * 100, // Paystack charges in kobo
-      currency: 'NGN',
-      ref: reference,
-      metadata: {
-        custom_fields: [
-          { display_name: 'Item', variable_name: 'item', value: product.name },
-          { display_name: 'Colour', variable_name: 'colour', value: colour.label },
-          { display_name: 'Size', variable_name: 'size', value: product.sizes.length ? size : 'One size' },
-          { display_name: 'Quantity', variable_name: 'quantity', value: String(quantity) },
-          { display_name: 'Buyer', variable_name: 'buyer_name', value: name },
-          { display_name: 'Phone', variable_name: 'phone', value: phone },
-          { display_name: 'Delivery address', variable_name: 'delivery_address', value: address },
-        ],
-      },
-      callback: () => {
-        setPlacedOrder(order);
-        setStage('done');
-      },
-      onClose: () => setFormError(''),
-    });
-
-    handler.openIframe();
-  }
-
-  function startAnotherOrder() {
-    setPlacedOrder(null);
-    setBuyer({ name: '', email: '', phone: '', address: '' });
-    setQuantity(1);
-    setSize('');
-    setStage('options');
   }
 
   return (
@@ -1768,166 +1716,276 @@ function ShopPage() {
             <p className="shop-panel__tagline">{product.tagline}</p>
             <p className="shop-panel__price">{formatNaira(product.price)}</p>
 
-            {stage === 'done' && placedOrder ? (
-              <div className="shop-success">
-                <h2 className="shop-success__title">Payment received</h2>
-                <p className="shop-success__note">
-                  Thank you. We have your order and will reach out on delivery before the summit.
-                </p>
-                <dl className="shop-success__list">
-                  <div>
-                    <dt>Reference</dt>
-                    <dd>{placedOrder.reference}</dd>
-                  </div>
-                  <div>
-                    <dt>Item</dt>
-                    <dd>
-                      {placedOrder.item}, {placedOrder.colour}
-                      {placedOrder.size ? `, size ${placedOrder.size}` : ''}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Quantity</dt>
-                    <dd>{placedOrder.quantity}</dd>
-                  </div>
-                  <div>
-                    <dt>Paid</dt>
-                    <dd>{formatNaira(placedOrder.subtotal)}</dd>
-                  </div>
-                </dl>
-                <button type="button" className="shop-panel__cta" onClick={startAnotherOrder}>
-                  Order something else
+            <div className="shop-field">
+              <p className="shop-field__label">
+                Colour <span className="shop-field__value">{colour.label}</span>
+              </p>
+              <div className="shop-swatches">
+                {product.colours.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    className={`shop-swatch ${option.id === colourId ? 'shop-swatch--active' : ''}`}
+                    style={{ background: option.swatch }}
+                    onClick={() => setColourId(option.id)}
+                    aria-label={option.label}
+                    aria-pressed={option.id === colourId}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {product.sizes.length > 0 && (
+              <div className="shop-field">
+                <p className="shop-field__label">Size *</p>
+                <div className="shop-sizes">
+                  {product.sizes.map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      className={`shop-size ${option === size ? 'shop-size--active' : ''}`}
+                      onClick={() => setSize(option)}
+                      aria-pressed={option === size}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="shop-field">
+              <p className="shop-field__label">Quantity</p>
+              <div className="shop-qty">
+                <button
+                  type="button"
+                  onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                  aria-label="Reduce quantity"
+                >
+                  −
+                </button>
+                <span>{quantity}</span>
+                <button
+                  type="button"
+                  onClick={() => setQuantity((prev) => Math.min(20, prev + 1))}
+                  aria-label="Increase quantity"
+                >
+                  +
                 </button>
               </div>
+            </div>
+
+            <div className="shop-subtotal">
+              <span>Subtotal</span>
+              <strong>{formatNaira(subtotal)}</strong>
+            </div>
+
+            {stage === 'options' ? (
+              <button type="button" className="shop-panel__cta" onClick={handleProceed}>
+                Proceed to Order
+              </button>
             ) : (
-              <>
-                <div className="shop-field">
-                  <p className="shop-field__label">
-                    Colour <span className="shop-field__value">{colour.label}</span>
-                  </p>
-                  <div className="shop-swatches">
-                    {product.colours.map((option) => (
-                      <button
-                        key={option.id}
-                        type="button"
-                        className={`shop-swatch ${option.id === colourId ? 'shop-swatch--active' : ''}`}
-                        style={{ background: option.swatch }}
-                        onClick={() => setColourId(option.id)}
-                        aria-label={option.label}
-                        aria-pressed={option.id === colourId}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {product.sizes.length > 0 && (
-                  <div className="shop-field">
-                    <p className="shop-field__label">Size *</p>
-                    <div className="shop-sizes">
-                      {product.sizes.map((option) => (
-                        <button
-                          key={option}
-                          type="button"
-                          className={`shop-size ${option === size ? 'shop-size--active' : ''}`}
-                          onClick={() => setSize(option)}
-                          aria-pressed={option === size}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="shop-field">
-                  <p className="shop-field__label">Quantity</p>
-                  <div className="shop-qty">
-                    <button
-                      type="button"
-                      onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                      aria-label="Reduce quantity"
-                    >
-                      −
-                    </button>
-                    <span>{quantity}</span>
-                    <button
-                      type="button"
-                      onClick={() => setQuantity((prev) => Math.min(20, prev + 1))}
-                      aria-label="Increase quantity"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <div className="shop-subtotal">
-                  <span>Subtotal</span>
-                  <strong>{formatNaira(subtotal)}</strong>
-                </div>
-
-                {stage === 'options' ? (
-                  <button type="button" className="shop-panel__cta" onClick={handleProceed}>
-                    Proceed to Order
-                  </button>
-                ) : (
-                  <form className="shop-checkout" onSubmit={handleCheckout}>
-                    <label className="shop-checkout__field">
-                      <span>Full name *</span>
-                      <input
-                        type="text"
-                        value={buyer.name}
-                        onChange={(e) => updateBuyer('name', e.target.value)}
-                        placeholder="Enter your full name"
-                      />
-                    </label>
-                    <label className="shop-checkout__field">
-                      <span>Email *</span>
-                      <input
-                        type="email"
-                        value={buyer.email}
-                        onChange={(e) => updateBuyer('email', e.target.value)}
-                        placeholder="you@email.com"
-                      />
-                    </label>
-                    <label className="shop-checkout__field">
-                      <span>Phone *</span>
-                      <input
-                        type="tel"
-                        value={buyer.phone}
-                        onChange={(e) => updateBuyer('phone', e.target.value)}
-                        placeholder="080..."
-                      />
-                    </label>
-                    <label className="shop-checkout__field">
-                      <span>Delivery address *</span>
-                      <textarea
-                        rows={3}
-                        value={buyer.address}
-                        onChange={(e) => updateBuyer('address', e.target.value)}
-                        placeholder="Street, city, state"
-                      />
-                    </label>
-                    <button type="submit" className="shop-panel__cta">
-                      {PAYSTACK_PUBLIC_KEY
-                        ? `Pay ${formatNaira(subtotal)} with Paystack`
-                        : `Send order on WhatsApp, ${formatNaira(subtotal)}`}
-                    </button>
-                    <button
-                      type="button"
-                      className="shop-checkout__back"
-                      onClick={() => {
-                        setStage('options');
-                        setFormError('');
-                      }}
-                    >
-                      Back to options
-                    </button>
-                  </form>
-                )}
-
-                {formError && <p className="shop-error">{formError}</p>}
-              </>
+              <form className="shop-checkout" onSubmit={handleCheckout}>
+                <label className="shop-checkout__field">
+                  <span>Full name *</span>
+                  <input
+                    type="text"
+                    value={buyer.name}
+                    onChange={(e) => updateBuyer('name', e.target.value)}
+                    placeholder="Enter your full name"
+                  />
+                </label>
+                <label className="shop-checkout__field">
+                  <span>Email *</span>
+                  <input
+                    type="email"
+                    value={buyer.email}
+                    onChange={(e) => updateBuyer('email', e.target.value)}
+                    placeholder="you@email.com"
+                  />
+                </label>
+                <label className="shop-checkout__field">
+                  <span>Phone *</span>
+                  <input
+                    type="tel"
+                    value={buyer.phone}
+                    onChange={(e) => updateBuyer('phone', e.target.value)}
+                    placeholder="080..."
+                  />
+                </label>
+                <label className="shop-checkout__field">
+                  <span>Delivery address *</span>
+                  <textarea
+                    rows={3}
+                    value={buyer.address}
+                    onChange={(e) => updateBuyer('address', e.target.value)}
+                    placeholder="Street, city, state"
+                  />
+                </label>
+                <button type="submit" className="shop-panel__cta" disabled={isSubmitting}>
+                  {isSubmitting ? 'Starting secure payment...' : `Pay ${formatNaira(subtotal)} with Paystack`}
+                </button>
+                <button
+                  type="button"
+                  className="shop-checkout__back"
+                  onClick={() => {
+                    setStage('options');
+                    setFormError('');
+                    setShowWhatsAppFallback(false);
+                  }}
+                >
+                  Back to options
+                </button>
+              </form>
             )}
+
+            {formError && <p className="shop-error">{formError}</p>}
+            {showWhatsAppFallback && (
+              <a
+                className="shop-checkout__whatsapp"
+                href={whatsAppOrderLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Send this order on WhatsApp instead
+              </a>
+            )}
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+      <EventCountdownBar />
+    </div>
+  );
+}
+
+// Paystack sends buyers back here with ?reference=, which we hand to the backend
+// to confirm the payment actually went through.
+function ShopPaymentCompletePage() {
+  const location = useLocation();
+  const reference = new URLSearchParams(location.search).get('reference') || '';
+
+  const [status, setStatus] = useState(reference ? 'checking' : 'missing');
+  const [order, setOrder] = useState(null);
+  const [attempt, setAttempt] = useState(0);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    if (!reference) {
+      setStatus('missing');
+      setOrder(null);
+      return undefined;
+    }
+
+    let active = true;
+    setStatus('checking');
+
+    (async () => {
+      try {
+        const response = await fetch(`${SHOP_VERIFY_ENDPOINT}/${encodeURIComponent(reference)}`);
+        const payload = await response.json().catch(() => null);
+        if (!active) return;
+
+        const record = payload?.data || null;
+        setOrder(record);
+
+        // The backend marks a settled order with paidAt, and has used both
+        // 'paid' and 'success' as the status wording.
+        const settled = Boolean(record?.paidAt) || ['paid', 'success'].includes(record?.status);
+
+        if (response.ok && settled) {
+          setStatus('paid');
+        } else if (response.ok) {
+          setStatus('unpaid');
+        } else {
+          setStatus('error');
+        }
+      } catch (error) {
+        if (active) setStatus('error');
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [reference, attempt]);
+
+  const headings = {
+    checking: 'Confirming your payment',
+    paid: 'Payment received',
+    unpaid: 'Payment not completed',
+    error: 'We could not confirm this payment',
+    missing: 'No payment reference',
+  };
+
+  const notes = {
+    checking: 'Hold on while we check this with Paystack.',
+    paid: 'Thank you. Your order is in and we will reach out about delivery before the summit.',
+    unpaid: 'Paystack has not confirmed this payment yet. If you have just paid, check again in a moment, otherwise start the order over.',
+    error: 'The payment service did not respond. Keep your reference and reach out so we can check it for you.',
+    missing: 'This page needs a payment reference, so start your order from the shop.',
+  };
+
+  return (
+    <div className="landing shop-page">
+      <NavBar />
+      <main className="shop-main">
+        <p className="shop-kicker">
+          Kairos Summit <span aria-hidden>·</span> Official merch
+        </p>
+
+        <section className="shop-receipt" aria-live="polite">
+          <h1 className="shop-success__title">{headings[status]}</h1>
+          <p className="shop-success__note">{notes[status]}</p>
+
+          {order && (
+            <dl className="shop-success__list">
+              <div>
+                <dt>Reference</dt>
+                <dd>{order.reference}</dd>
+              </div>
+              <div>
+                <dt>Item</dt>
+                <dd>
+                  {order.productName}, {order.colour}
+                  {order.size ? `, size ${order.size}` : ''}
+                </dd>
+              </div>
+              <div>
+                <dt>Quantity</dt>
+                <dd>{order.quantity}</dd>
+              </div>
+              <div>
+                <dt>{status === 'paid' ? 'Paid' : 'Total'}</dt>
+                <dd>{formatNaira(order.amountNaira)}</dd>
+              </div>
+              <div>
+                <dt>Deliver to</dt>
+                <dd>{order.deliveryAddress}</dd>
+              </div>
+            </dl>
+          )}
+
+          {!order && reference && status !== 'checking' && (
+            <p className="shop-receipt__reference">Reference: {reference}</p>
+          )}
+
+          <div className="shop-receipt__actions">
+            {(status === 'unpaid' || status === 'error') && (
+              <button
+                type="button"
+                className="shop-panel__cta"
+                onClick={() => setAttempt((prev) => prev + 1)}
+              >
+                Check again
+              </button>
+            )}
+            <Link to="/shop" className="shop-receipt__link">
+              {status === 'paid' ? 'Back to the shop' : 'Return to the shop'}
+            </Link>
           </div>
         </section>
       </main>
@@ -2507,6 +2565,7 @@ function App() {
       <Route path="/speakers" element={<SpeakersPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/shop" element={<ShopPage />} />
+      <Route path="/shop/payment-complete" element={<ShopPaymentCompletePage />} />
       <Route path="/volunteer" element={<VolunteerPage />} />
       <Route path="/blog" element={<BlogPage />} />
       <Route path="/blog/:storySlug" element={<BlogStoryPage />} />

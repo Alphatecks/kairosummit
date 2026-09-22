@@ -5288,9 +5288,14 @@
   transition: background 0.2s, transform 0.2s;
 }
 
-.shop-panel__cta:hover {
+.shop-panel__cta:hover:not(:disabled) {
   background: #FABD21;
   transform: translateY(-1px);
+}
+
+.shop-panel__cta:disabled {
+  opacity: 0.6;
+  cursor: progress;
 }
 
 .shop-checkout {
@@ -5401,6 +5406,50 @@
   font-weight: 600;
   text-align: right;
   color: var(--color-white);
+}
+
+.shop-checkout__whatsapp {
+  display: inline-block;
+  margin-top: 0.9rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #FABD21;
+}
+
+.shop-receipt {
+  max-width: 520px;
+  margin: 2rem auto 0;
+  padding: 2rem;
+  border: 1px solid rgba(250, 189, 33, 0.3);
+  border-radius: 18px;
+  background: #1a0f13;
+}
+
+.shop-receipt .shop-success__title {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+}
+
+.shop-receipt__reference {
+  margin: 0 0 1.5rem;
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.65);
+  word-break: break-all;
+}
+
+.shop-receipt__actions {
+  display: grid;
+  gap: 0.9rem;
+  justify-items: center;
+}
+
+.shop-receipt__link {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.shop-receipt__link:hover {
+  color: #FABD21;
 }
 
 @media (max-width: 900px) {
