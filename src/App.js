@@ -27,8 +27,35 @@ import deeImg from './assets/images/pictures/dee.jpg';
 import blessingImg from './assets/images/pictures/blessing.png';
 import obasImg from './assets/images/pictures/obas.png';
 import blogHeroImg from './assets/images/pictures/DSC_9812.JPG';
+import bisolaBadejoImg from './assets/images/speakers/bisola-badejo.jpg';
+import victorJeremiahImg from './assets/images/speakers/victor-jeremiah.jpg';
+import barrIllasheImg from './assets/images/speakers/barr-illashe.jpg';
+import victorOkeomaImg from './assets/images/speakers/victor-okeoma.jpg';
+import mamusOfigoImg from './assets/images/speakers/mamus-ofigo.jpg';
+import uzunmaEkeruoImg from './assets/images/speakers/uzunma-ekeruo.jpg';
+import uganzeChikezieImg from './assets/images/speakers/uganze-chikezie.jpg';
+import maioImg from './assets/images/speakers/maio.jpg';
+import emiraEdjImg from './assets/images/speakers/emira-edj.jpg';
+import joyAgbaleImg from './assets/images/speakers/joy-oluwasanmi-agbale.jpg';
+import pastIhediwaMaxwellImg from './assets/images/previous-speakers/ihediwa-maxwell.jpg';
+import pastSeyiAbiodunImg from './assets/images/previous-speakers/seyi-abiodun.jpg';
+import pastVictorOkeomaImg from './assets/images/previous-speakers/victor-okeoma.jpg';
+import pastUzunmaEkeruoImg from './assets/images/previous-speakers/uzunma-ekeruo.jpg';
+import pastUganzeChikezieImg from './assets/images/previous-speakers/uganze-chikezie.jpg';
+import pastOluchiKemeImg from './assets/images/previous-speakers/oluchi-keme.jpg';
+import tshirtBlackImg from './assets/images/merch/tshirt-black.jpg';
+import tshirtWhiteImg from './assets/images/merch/tshirt-white.jpg';
+import tshirtNavyImg from './assets/images/merch/tshirt-navy.jpg';
+import tshirtOliveImg from './assets/images/merch/tshirt-olive.jpg';
+import tshirtMaroonImg from './assets/images/merch/tshirt-maroon.jpg';
+import capBlackImg from './assets/images/merch/cap-black.jpg';
+import capWhiteImg from './assets/images/merch/cap-white.jpg';
+import capNavyImg from './assets/images/merch/cap-navy.jpg';
+import capOliveImg from './assets/images/merch/cap-olive.jpg';
+import capMaroonImg from './assets/images/merch/cap-maroon.jpg';
 
 const WHATSAPP_LINK = 'https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t';
+const EVENT_START = '2026-11-14T10:00:00+01:00'; // Remnants Reborn, 10:00 AM WAT
 const INSTAGRAM_LINK = 'https://www.instagram.com/kairos_summit/';
 const BLOG_API_BASE_URL = 'https://blogger-backend-km7w.onrender.com'; // live Render API
 const BLOG_FEED_ENDPOINT = `${BLOG_API_BASE_URL}/api/blogs/feed?page=1&limit=20`;
@@ -51,13 +78,120 @@ const HERO_SLIDES = [
 ];
 
 const RAINBOW_CARDS = [
-  { img: remnantsRebornImg, title: 'Remnants Reborn.', date: 'November 14' },
-  { img: truthDisciplineImg, title: 'Truth & Discipline.', date: 'December 3' },
-  { img: whatWeDoImg3, title: 'Community & Growth.', date: 'December 20' },
-  { img: whoWeAreImg, title: 'Who We Are.', date: 'January 12' },
-  { img: whatWeDoImg1, title: 'Formation Gathering.', date: 'February 8' },
-  { img: whatWeDoImg2, title: 'Kairos Summit 2026.', date: 'March 20' },
+  { img: remnantsRebornImg, title: 'Remnants Reborn.' },
+  { img: truthDisciplineImg, title: 'Truth & Discipline.' },
+  { img: whatWeDoImg3, title: 'Community & Growth.' },
+  { img: whoWeAreImg, title: 'Who We Are.' },
+  { img: whatWeDoImg1, title: 'Formation Gathering.' },
+  { img: whatWeDoImg2, title: 'Kairos Summit 2026.' },
 ];
+
+const KAIROS_NUMBERS = [
+  { value: '250+', label: 'Community Members' },
+  { value: '1,000+', label: 'Summit Attendees' },
+  { value: '10', label: 'Virtual Events' },
+  { value: '12+', label: 'Guest Speakers' },
+  { value: '1', label: 'Edition Delivered' },
+  { value: '10+', label: 'Sponsors' },
+];
+
+// Fill in { name, role, img } on each entry as speakers are confirmed.
+const CONFIRMED_SPEAKERS = [
+  {
+    id: 'confirmed-1',
+    name: 'Pst. Bisola Badejo',
+    role: 'CEO, Celebration Church International',
+    img: bisolaBadejoImg,
+  },
+  { id: 'confirmed-2' },
+  { id: 'confirmed-3' },
+  { id: 'confirmed-4' },
+];
+
+const EVENT_LINEUP = [
+  { id: 'lineup-1', name: 'Pst. Victor Jeremiah', role: 'Panelist', img: victorJeremiahImg },
+  { id: 'lineup-2', name: 'Mrs. Uzunma Ekeruo', role: 'Panelist', img: uzunmaEkeruoImg },
+  { id: 'lineup-3', name: 'Pst. Barr Illashe', role: 'Panelist', img: barrIllasheImg },
+  { id: 'lineup-4', name: 'Pst. Victor Okeoma', role: 'Panelist', img: victorOkeomaImg },
+  { id: 'lineup-5', name: 'Pst. Mamus Ofigo', role: 'Panelist', img: mamusOfigoImg },
+  { id: 'lineup-6', name: 'Maio', role: 'Music Artist', img: maioImg },
+  { id: 'lineup-7', name: 'Emira Edj', role: 'Spoken Word Artist', img: emiraEdjImg },
+  { id: 'lineup-8', name: 'Uganze Chikezie', role: 'Host', img: uganzeChikezieImg },
+  { id: 'lineup-9', name: 'Joy Oluwasanmi-Agbale', role: 'Host', img: joyAgbaleImg },
+];
+
+const PREVIOUS_SPEAKERS = [
+  { id: 'previous-1', name: 'Ihediwa Maxwell', role: 'Speaker', img: pastIhediwaMaxwellImg },
+  { id: 'previous-2', name: 'Seyi Abiodun', role: 'Speaker', img: pastSeyiAbiodunImg },
+  { id: 'previous-3', name: 'Pst. Victor Okeoma', role: 'Speaker', img: pastVictorOkeomaImg },
+  { id: 'previous-4', name: 'Mrs. Uzunma Ekeruo', role: 'Facilitator', img: pastUzunmaEkeruoImg },
+  { id: 'previous-5', name: 'Uganze Chikezie', role: 'Host', img: pastUganzeChikezieImg },
+  { id: 'previous-6', name: 'Oluchi Keme', role: 'Co-Host', img: pastOluchiKemeImg },
+];
+
+// Swatches are sampled off the mockups, and each colour carries the photo the
+// gallery shows when it is picked. Adjust prices as stock is confirmed.
+const SHOP_PRODUCTS = [
+  {
+    id: 'tshirt',
+    name: 'Kairos Summit Official T-Shirt',
+    tagline: 'Equipping, imparting, activating and connecting kingdom creatives',
+    price: 8000,
+    tabLabel: 'T-Shirt',
+    colours: [
+      { id: 'black', label: 'Black', swatch: '#101010', img: tshirtBlackImg },
+      { id: 'white', label: 'White', swatch: '#f1f1ef', img: tshirtWhiteImg },
+      { id: 'navy', label: 'Navy', swatch: '#1d2130', img: tshirtNavyImg },
+      { id: 'olive', label: 'Olive', swatch: '#3c3f31', img: tshirtOliveImg },
+      { id: 'maroon', label: 'Oxblood', swatch: '#2f1616', img: tshirtMaroonImg },
+    ],
+    sizes: ['M', 'L', 'XL', 'XXL', 'XXXL'],
+  },
+  {
+    id: 'cap',
+    name: 'Kairos Summit Face Cap',
+    tagline: 'Everyday cover for the remnant',
+    price: 4000,
+    tabLabel: 'Face Cap',
+    colours: [
+      {
+        id: 'black-gold',
+        label: 'Black and Gold',
+        swatch: 'linear-gradient(160deg, #161616 0 58%, #deb04f 58%)',
+        img: capBlackImg,
+      },
+      {
+        id: 'white',
+        label: 'White and Charcoal',
+        swatch: 'linear-gradient(160deg, #f1f1ef 0 58%, #373737 58%)',
+        img: capWhiteImg,
+      },
+      { id: 'navy', label: 'Navy', swatch: '#23252e', img: capNavyImg },
+      { id: 'olive', label: 'Olive', swatch: '#2f322c', img: capOliveImg },
+      {
+        id: 'maroon-gold',
+        label: 'Oxblood and Gold',
+        swatch: 'linear-gradient(160deg, #2c1b1b 0 58%, #deb04f 58%)',
+        img: capMaroonImg,
+      },
+    ],
+    sizes: [],
+  },
+];
+
+const NAME_TITLES = ['Mr.', 'Mrs.', 'Miss', 'Ms.', 'Dr.', 'Pst.'];
+const VOLUNTEER_AREAS = [
+  'Ushering/Protocol',
+  'Publicity',
+  'Content Creation',
+  'Logistics',
+  'Medicals',
+];
+const VOLUNTEER_AVAILABILITY = ['Full Day', 'Morning Only', 'Afternoon Only'];
+
+const PAYSTACK_PUBLIC_KEY = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY || '';
+const PAYSTACK_SCRIPT_SRC = 'https://js.paystack.co/v1/inline.js';
+const WHATSAPP_ORDER_NUMBER = '2349136543580';
 
 const TEAM_CONTACT_MEMBERS = [
   { img: johnImg, name: 'John Nnaoma', role: 'Personal Assistant' },
@@ -70,6 +204,16 @@ const TEAM_CONTACT_MEMBERS = [
 
 function toStorySlug(title, index) {
   return `${title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}-${index + 1}`;
+}
+
+function getCountdownParts(target) {
+  const secondsLeft = Math.max(0, Math.floor((target - Date.now()) / 1000));
+  return [
+    { label: 'Days', value: Math.floor(secondsLeft / 86400) },
+    { label: 'Hours', value: Math.floor((secondsLeft % 86400) / 3600) },
+    { label: 'Minutes', value: Math.floor((secondsLeft % 3600) / 60) },
+    { label: 'Seconds', value: secondsLeft % 60 },
+  ];
 }
 
 function formatPublishedDate(value) {
@@ -291,7 +435,13 @@ function NavBar() {
             <NavLink to="/events" className={({ isActive }) => `nav__link ${isActive ? 'nav__link--active' : ''}`}>Events</NavLink>
           </li>
           <li>
+            <NavLink to="/speakers" className={({ isActive }) => `nav__link ${isActive ? 'nav__link--active' : ''}`}>Speakers</NavLink>
+          </li>
+          <li>
             <NavLink to="/blog" className={({ isActive }) => `nav__link ${isActive ? 'nav__link--active' : ''}`}>Blog</NavLink>
+          </li>
+          <li>
+            <NavLink to="/shop" className={({ isActive }) => `nav__link ${isActive ? 'nav__link--active' : ''}`}>Shop</NavLink>
           </li>
         </ul>
       </nav>
@@ -334,7 +484,13 @@ function NavBar() {
               <NavLink to="/events" className="mobile-nav__link" onClick={() => setIsMenuOpen(false)}>Events</NavLink>
             </li>
             <li>
+              <NavLink to="/speakers" className="mobile-nav__link" onClick={() => setIsMenuOpen(false)}>Speakers</NavLink>
+            </li>
+            <li>
               <NavLink to="/blog" className="mobile-nav__link" onClick={() => setIsMenuOpen(false)}>Blog</NavLink>
+            </li>
+            <li>
+              <NavLink to="/shop" className="mobile-nav__link" onClick={() => setIsMenuOpen(false)}>Shop</NavLink>
             </li>
           </ul>
           <a href={WHATSAPP_LINK} className="btn btn--primary mobile-nav__cta" target="_blank" rel="noopener noreferrer">Join our community</a>
@@ -342,6 +498,160 @@ function NavBar() {
       </div>
       <a href={WHATSAPP_LINK} className="nav-cta btn btn--primary" target="_blank" rel="noopener noreferrer">Join our community</a>
     </>
+  );
+}
+
+function SpeakerCard({ speaker, tapToReveal = false }) {
+  const { name, role, img } = speaker;
+  // Touch screens have no hover, so a tap is what brings a flier to colour there.
+  const [isRevealed, setIsRevealed] = useState(false);
+
+  return (
+    <article
+      className={`speaker-card ${isRevealed ? 'speaker-card--revealed' : ''}`}
+      onClick={tapToReveal ? () => setIsRevealed((prev) => !prev) : undefined}
+    >
+      <div className="speaker-card__poster">
+        {img ? (
+          <img src={img} alt={name} className="speaker-card__photo" />
+        ) : (
+          <div className="speaker-card__poster-blank">
+            <img src={logo} alt="" className="speaker-card__poster-logo" />
+            <span className="speaker-card__poster-word">Speaker</span>
+          </div>
+        )}
+      </div>
+      <h3 className="speaker-card__name">{name || 'To be announced'}</h3>
+      <p className="speaker-card__role">{role || 'Reveal coming soon'}</p>
+    </article>
+  );
+}
+
+function SpeakersPage() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  return (
+    <div className="landing speakers-page">
+      <NavBar />
+      <main className="speakers-main">
+        <header className="speakers-hero">
+          <p className="speakers-hero__kicker">Second edition <span aria-hidden>·</span> 2026</p>
+          <h1 className="speakers-hero__title">All Confirmed Speakers</h1>
+          <p className="speakers-hero__lead">
+            Meet the pastors, creatives, and industry voices confirmed for Remnants Reborn, 14 November 2026.
+          </p>
+          <a href="#previous-speakers" className="speakers-hero__jump">
+            Looking for past editions? View previous speakers <span aria-hidden>→</span>
+          </a>
+        </header>
+
+        <section className="speakers-list speakers-list--fliers" aria-labelledby="speaker-heading">
+          <h2 id="speaker-heading" className="speakers-list__title speakers-list__title--tight">Speakers</h2>
+          <div className="speakers-grid">
+            {CONFIRMED_SPEAKERS.map((speaker) => (
+              <SpeakerCard key={speaker.id} speaker={speaker} tapToReveal />
+            ))}
+          </div>
+        </section>
+
+        <section className="speakers-list speakers-list--lineup speakers-list--fliers" aria-labelledby="lineup-heading">
+          <h2 id="lineup-heading" className="speakers-list__title speakers-list__title--tight">
+            Panelists, Music Artists and Hosts
+          </h2>
+          <div className="speakers-grid">
+            {EVENT_LINEUP.map((person) => (
+              <SpeakerCard key={person.id} speaker={person} tapToReveal />
+            ))}
+          </div>
+        </section>
+
+        <section className="speakers-list speakers-list--previous speakers-list--fliers" id="previous-speakers" aria-labelledby="previous-speakers-heading">
+          <p className="speakers-list__kicker">First edition <span aria-hidden>·</span> 2024</p>
+          <h2 id="previous-speakers-heading" className="speakers-list__title">Previous Speakers</h2>
+          <div className="speakers-grid">
+            {PREVIOUS_SPEAKERS.map((speaker) => (
+              <SpeakerCard key={speaker.id} speaker={speaker} tapToReveal />
+            ))}
+          </div>
+        </section>
+
+        <section className="speakers-contact" aria-labelledby="speakers-contact-heading">
+          <div className="speakers-contact__inner">
+            <p className="speakers-contact__kicker">Get in touch</p>
+            <h2 id="speakers-contact-heading" className="speakers-contact__title">
+              Have questions, suggestions, or partnership ideas? Let&apos;s build this movement, together.
+            </h2>
+            <div className="speakers-contact__cards">
+              <div className="speakers-contact__card">
+                <span className="speakers-contact__icon" aria-hidden>
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" focusable="false">
+                    <rect x="2.5" y="4.5" width="19" height="15" rx="2.5" />
+                    <path d="m3.5 6.5 8.5 6 8.5-6" />
+                  </svg>
+                </span>
+                <h3 className="speakers-contact__card-title">Email Us</h3>
+                <p className="speakers-contact__card-note">General inquiries and partnerships</p>
+                <a href="mailto:admin@kairosummit.org" className="speakers-contact__card-link">admin@kairosummit.org</a>
+              </div>
+              <div className="speakers-contact__card">
+                <span className="speakers-contact__icon" aria-hidden>
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" focusable="false">
+                    <path d="M7.5 3.5h-3a1.5 1.5 0 0 0-1.5 1.6c.4 5.3 2.4 9.5 6 12.6 2.8 2.4 5.6 2.9 7 2.8a1.5 1.5 0 0 0 1.4-1.5v-2.8l-4-1.6-2 2a13 13 0 0 1-5-5.4l2.1-1.9-1-3.8Z" />
+                  </svg>
+                </span>
+                <h3 className="speakers-contact__card-title">Call Us</h3>
+                <p className="speakers-contact__card-note">Available on weekdays</p>
+                <a href="tel:+2349136543580" className="speakers-contact__card-link">+234 913-654-3580</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
+
+function EventCountdownBar() {
+  const target = useMemo(() => new Date(EVENT_START).getTime(), []);
+  const [parts, setParts] = useState(() => getCountdownParts(target));
+  const [isHidden, setIsHidden] = useState(false);
+
+  useEffect(() => {
+    const tick = setInterval(() => setParts(getCountdownParts(target)), 1000);
+    return () => clearInterval(tick);
+  }, [target]);
+
+  if (isHidden) return null;
+
+  return (
+    <aside className="countdown-bar" aria-label="Countdown to Remnants Reborn">
+      <p className="countdown-bar__event">
+        Remnants Reborn <span aria-hidden>·</span> Port Harcourt, Rivers State
+      </p>
+      <div className="countdown-bar__clock">
+        {parts.map(({ label, value }) => (
+          <div className="countdown-bar__unit" key={label}>
+            <span className="countdown-bar__value">{String(value).padStart(2, '0')}</span>
+            <span className="countdown-bar__label">{label}</span>
+          </div>
+        ))}
+      </div>
+      <div className="countdown-bar__actions">
+        <Link to="/register" className="countdown-bar__btn countdown-bar__btn--gold">Get Ticket</Link>
+        <Link to="/volunteer" className="countdown-bar__btn">Volunteer</Link>
+        <button
+          type="button"
+          className="countdown-bar__close"
+          onClick={() => setIsHidden(true)}
+          aria-label="Hide countdown"
+        >
+          ×
+        </button>
+      </div>
+    </aside>
   );
 }
 
@@ -1139,7 +1449,7 @@ function EventsPage() {
             </div>
             <div className="events-intro__right">
               <p className="events-intro__text">
-                Kairos Summit gatherings are formation spaces — teaching, honest conversation, and the kind of room you leave more rooted than you arrived. The next major one is in Port Harcourt.
+                Kairos Summit gatherings are formation spaces for teaching, honest conversation, and the kind of room you leave more rooted than you arrived. The next major one is in Port Harcourt.
               </p>
               <Link to="/register" className="events-intro__jump">
                 Where to register <span aria-hidden>→</span>
@@ -1151,7 +1461,7 @@ function EventsPage() {
         <section className="events-feature section section--white" aria-labelledby="events-feature-heading">
           <div className="events-feature__inner">
             <div className="events-feature__media">
-              <img src={remnantsRebornBanner} alt="Remnants Reborn — Kairos Summit, 14 November 2026 at Celebr8 Centre" />
+              <img src={remnantsRebornBanner} alt="Remnants Reborn, Kairos Summit, 14 November 2026 at Celebr8 Centre" />
               <span className="events-feature__badge">Next gathering</span>
             </div>
             <div className="events-feature__copy">
@@ -1171,7 +1481,7 @@ function EventsPage() {
                 </div>
                 <div>
                   <dt>Time</dt>
-                  <dd>8:30 AM</dd>
+                  <dd>10:00 AM</dd>
                 </div>
               </dl>
               <Link to="/register" className="events-feature__link">
@@ -1189,7 +1499,7 @@ function EventsPage() {
                 You register here, on Kairos Summit.
               </h2>
               <p className="events-register__text">
-                Remnants Reborn seats are taken on this site — not in WhatsApp. The group is for staying in the conversation. Registration has its own page.
+                Remnants Reborn seats are taken on this site, not in WhatsApp. The group is for staying in the conversation. Registration has its own page.
               </p>
               <Link to="/register" className="btn events-register__cta">
                 Register for Remnants Reborn
@@ -1242,6 +1552,642 @@ function EventsPage() {
         </section>
       </main>
       <SiteFooter />
+    </div>
+  );
+}
+
+function formatNaira(amount) {
+  return `\u20a6${amount.toLocaleString('en-NG')}`;
+}
+
+function makeOrderReference() {
+  const stamp = Date.now().toString(36).toUpperCase();
+  const noise = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `KS-${stamp}-${noise}`;
+}
+
+function ShopPage() {
+  const [productId, setProductId] = useState(SHOP_PRODUCTS[0].id);
+  const product = SHOP_PRODUCTS.find((item) => item.id === productId) || SHOP_PRODUCTS[0];
+
+  const [colourId, setColourId] = useState(product.colours[0].id);
+  const [size, setSize] = useState('');
+  const [quantity, setQuantity] = useState(1);
+  const [stage, setStage] = useState('options');
+  const [buyer, setBuyer] = useState({ name: '', email: '', phone: '', address: '' });
+  const [formError, setFormError] = useState('');
+  const [isPaymentReady, setIsPaymentReady] = useState(false);
+  const [placedOrder, setPlacedOrder] = useState(null);
+
+  const colour = product.colours.find((item) => item.id === colourId) || product.colours[0];
+  const subtotal = useMemo(() => product.price * quantity, [product.price, quantity]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    if (!PAYSTACK_PUBLIC_KEY) return undefined;
+    if (window.PaystackPop) {
+      setIsPaymentReady(true);
+      return undefined;
+    }
+
+    const existing = document.querySelector(`script[src="${PAYSTACK_SCRIPT_SRC}"]`);
+    const script = existing || document.createElement('script');
+    const onReady = () => setIsPaymentReady(true);
+
+    script.addEventListener('load', onReady);
+    if (!existing) {
+      script.src = PAYSTACK_SCRIPT_SRC;
+      script.async = true;
+      document.body.appendChild(script);
+    }
+
+    return () => script.removeEventListener('load', onReady);
+  }, []);
+
+  function selectProduct(nextId) {
+    const next = SHOP_PRODUCTS.find((item) => item.id === nextId);
+    if (!next) return;
+    setProductId(nextId);
+    setColourId(next.colours[0].id);
+    setSize('');
+    setQuantity(1);
+    setStage('options');
+    setFormError('');
+  }
+
+  function orderSummaryText(reference) {
+    const lines = [
+      'New Kairos Summit merch order',
+      `Item: ${product.name}`,
+      `Colour: ${colour.label}`,
+      product.sizes.length ? `Size: ${size}` : null,
+      `Quantity: ${quantity}`,
+      `Subtotal: ${formatNaira(subtotal)}`,
+      reference ? `Reference: ${reference}` : null,
+      buyer.name ? `Name: ${buyer.name}` : null,
+      buyer.phone ? `Phone: ${buyer.phone}` : null,
+      buyer.address ? `Deliver to: ${buyer.address}` : null,
+    ];
+    return lines.filter(Boolean).join('\n');
+  }
+
+  function openWhatsAppOrder(reference) {
+    const url = `https://wa.me/${WHATSAPP_ORDER_NUMBER}?text=${encodeURIComponent(orderSummaryText(reference))}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  function handleProceed() {
+    if (product.sizes.length && !size) {
+      setFormError('Pick a size before you continue.');
+      return;
+    }
+    setFormError('');
+    setStage('details');
+  }
+
+  function updateBuyer(field, value) {
+    setBuyer((prev) => ({ ...prev, [field]: value }));
+  }
+
+  function handleCheckout(event) {
+    event.preventDefault();
+    const name = buyer.name.trim();
+    const email = buyer.email.trim();
+    const phone = buyer.phone.trim();
+    const address = buyer.address.trim();
+
+    if (!name || !email || !phone || !address) {
+      setFormError('Fill in your name, email, phone and delivery address.');
+      return;
+    }
+
+    setFormError('');
+    const reference = makeOrderReference();
+    const order = {
+      reference,
+      item: product.name,
+      colour: colour.label,
+      size: product.sizes.length ? size : '',
+      quantity,
+      subtotal,
+    };
+
+    if (!PAYSTACK_PUBLIC_KEY || !isPaymentReady || !window.PaystackPop) {
+      openWhatsAppOrder(reference);
+      return;
+    }
+
+    const handler = window.PaystackPop.setup({
+      key: PAYSTACK_PUBLIC_KEY,
+      email,
+      amount: subtotal * 100, // Paystack charges in kobo
+      currency: 'NGN',
+      ref: reference,
+      metadata: {
+        custom_fields: [
+          { display_name: 'Item', variable_name: 'item', value: product.name },
+          { display_name: 'Colour', variable_name: 'colour', value: colour.label },
+          { display_name: 'Size', variable_name: 'size', value: product.sizes.length ? size : 'One size' },
+          { display_name: 'Quantity', variable_name: 'quantity', value: String(quantity) },
+          { display_name: 'Buyer', variable_name: 'buyer_name', value: name },
+          { display_name: 'Phone', variable_name: 'phone', value: phone },
+          { display_name: 'Delivery address', variable_name: 'delivery_address', value: address },
+        ],
+      },
+      callback: () => {
+        setPlacedOrder(order);
+        setStage('done');
+      },
+      onClose: () => setFormError(''),
+    });
+
+    handler.openIframe();
+  }
+
+  function startAnotherOrder() {
+    setPlacedOrder(null);
+    setBuyer({ name: '', email: '', phone: '', address: '' });
+    setQuantity(1);
+    setSize('');
+    setStage('options');
+  }
+
+  return (
+    <div className="landing shop-page">
+      <NavBar />
+      <main className="shop-main">
+        <p className="shop-kicker">
+          Kairos Summit <span aria-hidden>·</span> Official merch
+        </p>
+
+        <div className="shop-tabs" role="tablist" aria-label="Merch items">
+          {SHOP_PRODUCTS.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              role="tab"
+              aria-selected={item.id === productId}
+              className={`shop-tab ${item.id === productId ? 'shop-tab--active' : ''}`}
+              onClick={() => selectProduct(item.id)}
+            >
+              {item.tabLabel} <span aria-hidden>·</span> {formatNaira(item.price)}
+            </button>
+          ))}
+        </div>
+
+        <section className="shop-layout" aria-label={product.name}>
+          <div className="shop-gallery">
+            <div className="shop-gallery__main">
+              <img
+                src={colour.img}
+                alt={`${product.name} in ${colour.label}`}
+                className="shop-gallery__photo"
+              />
+            </div>
+            <div className="shop-gallery__thumbs">
+              {product.colours.map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  className={`shop-thumb ${option.id === colourId ? 'shop-thumb--active' : ''}`}
+                  onClick={() => setColourId(option.id)}
+                  aria-label={`View ${option.label}`}
+                  aria-pressed={option.id === colourId}
+                >
+                  <img src={option.img} alt="" />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="shop-panel">
+            <h1 className="shop-panel__title">{product.name}</h1>
+            <p className="shop-panel__tagline">{product.tagline}</p>
+            <p className="shop-panel__price">{formatNaira(product.price)}</p>
+
+            {stage === 'done' && placedOrder ? (
+              <div className="shop-success">
+                <h2 className="shop-success__title">Payment received</h2>
+                <p className="shop-success__note">
+                  Thank you. We have your order and will reach out on delivery before the summit.
+                </p>
+                <dl className="shop-success__list">
+                  <div>
+                    <dt>Reference</dt>
+                    <dd>{placedOrder.reference}</dd>
+                  </div>
+                  <div>
+                    <dt>Item</dt>
+                    <dd>
+                      {placedOrder.item}, {placedOrder.colour}
+                      {placedOrder.size ? `, size ${placedOrder.size}` : ''}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Quantity</dt>
+                    <dd>{placedOrder.quantity}</dd>
+                  </div>
+                  <div>
+                    <dt>Paid</dt>
+                    <dd>{formatNaira(placedOrder.subtotal)}</dd>
+                  </div>
+                </dl>
+                <button type="button" className="shop-panel__cta" onClick={startAnotherOrder}>
+                  Order something else
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="shop-field">
+                  <p className="shop-field__label">
+                    Colour <span className="shop-field__value">{colour.label}</span>
+                  </p>
+                  <div className="shop-swatches">
+                    {product.colours.map((option) => (
+                      <button
+                        key={option.id}
+                        type="button"
+                        className={`shop-swatch ${option.id === colourId ? 'shop-swatch--active' : ''}`}
+                        style={{ background: option.swatch }}
+                        onClick={() => setColourId(option.id)}
+                        aria-label={option.label}
+                        aria-pressed={option.id === colourId}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {product.sizes.length > 0 && (
+                  <div className="shop-field">
+                    <p className="shop-field__label">Size *</p>
+                    <div className="shop-sizes">
+                      {product.sizes.map((option) => (
+                        <button
+                          key={option}
+                          type="button"
+                          className={`shop-size ${option === size ? 'shop-size--active' : ''}`}
+                          onClick={() => setSize(option)}
+                          aria-pressed={option === size}
+                        >
+                          {option}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="shop-field">
+                  <p className="shop-field__label">Quantity</p>
+                  <div className="shop-qty">
+                    <button
+                      type="button"
+                      onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
+                      aria-label="Reduce quantity"
+                    >
+                      −
+                    </button>
+                    <span>{quantity}</span>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity((prev) => Math.min(20, prev + 1))}
+                      aria-label="Increase quantity"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div className="shop-subtotal">
+                  <span>Subtotal</span>
+                  <strong>{formatNaira(subtotal)}</strong>
+                </div>
+
+                {stage === 'options' ? (
+                  <button type="button" className="shop-panel__cta" onClick={handleProceed}>
+                    Proceed to Order
+                  </button>
+                ) : (
+                  <form className="shop-checkout" onSubmit={handleCheckout}>
+                    <label className="shop-checkout__field">
+                      <span>Full name *</span>
+                      <input
+                        type="text"
+                        value={buyer.name}
+                        onChange={(e) => updateBuyer('name', e.target.value)}
+                        placeholder="Enter your full name"
+                      />
+                    </label>
+                    <label className="shop-checkout__field">
+                      <span>Email *</span>
+                      <input
+                        type="email"
+                        value={buyer.email}
+                        onChange={(e) => updateBuyer('email', e.target.value)}
+                        placeholder="you@email.com"
+                      />
+                    </label>
+                    <label className="shop-checkout__field">
+                      <span>Phone *</span>
+                      <input
+                        type="tel"
+                        value={buyer.phone}
+                        onChange={(e) => updateBuyer('phone', e.target.value)}
+                        placeholder="080..."
+                      />
+                    </label>
+                    <label className="shop-checkout__field">
+                      <span>Delivery address *</span>
+                      <textarea
+                        rows={3}
+                        value={buyer.address}
+                        onChange={(e) => updateBuyer('address', e.target.value)}
+                        placeholder="Street, city, state"
+                      />
+                    </label>
+                    <button type="submit" className="shop-panel__cta">
+                      {PAYSTACK_PUBLIC_KEY
+                        ? `Pay ${formatNaira(subtotal)} with Paystack`
+                        : `Send order on WhatsApp, ${formatNaira(subtotal)}`}
+                    </button>
+                    <button
+                      type="button"
+                      className="shop-checkout__back"
+                      onClick={() => {
+                        setStage('options');
+                        setFormError('');
+                      }}
+                    >
+                      Back to options
+                    </button>
+                  </form>
+                )}
+
+                {formError && <p className="shop-error">{formError}</p>}
+              </>
+            )}
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+      <EventCountdownBar />
+    </div>
+  );
+}
+
+function VolunteerPage() {
+  const [form, setForm] = useState({
+    title: NAME_TITLES[0],
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    organization: '',
+    skills: '',
+    availability: '',
+    servedBefore: '',
+    note: '',
+  });
+  const [areas, setAreas] = useState([]);
+  const [error, setError] = useState('');
+  const [isSent, setIsSent] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  function update(field, value) {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  }
+
+  function toggleArea(area) {
+    setAreas((prev) => (prev.includes(area) ? prev.filter((item) => item !== area) : [...prev, area]));
+  }
+
+  function buildApplication() {
+    const lines = [
+      'Kairos Summit volunteer application',
+      `Name: ${form.title} ${form.firstName.trim()} ${form.lastName.trim()}`,
+      `Email: ${form.email.trim()}`,
+      `Phone: ${form.phone.trim()}`,
+      form.organization.trim() ? `Church / Organisation: ${form.organization.trim()}` : null,
+      form.skills.trim() ? `Relevant skills: ${form.skills.trim()}` : null,
+      `Preferred areas: ${areas.join(', ')}`,
+      `Availability: ${form.availability}`,
+      form.servedBefore ? `Volunteered before: ${form.servedBefore}` : null,
+      form.note.trim() ? `Note: ${form.note.trim()}` : null,
+    ];
+    return lines.filter(Boolean).join('\n');
+  }
+
+  function openWhatsApp() {
+    const url = `https://wa.me/${WHATSAPP_ORDER_NUMBER}?text=${encodeURIComponent(buildApplication())}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    if (!form.firstName.trim() || !form.lastName.trim() || !form.email.trim() || !form.phone.trim()) {
+      setError('Fill in your name, email and phone number.');
+      return;
+    }
+    if (!areas.length) {
+      setError('Pick at least one area you would like to serve in.');
+      return;
+    }
+    if (!form.availability) {
+      setError('Let us know how much of the day you are available.');
+      return;
+    }
+
+    setError('');
+    openWhatsApp();
+    setIsSent(true);
+  }
+
+  return (
+    <div className="landing volunteer-page">
+      <NavBar />
+      <main className="volunteer-main">
+        <header className="volunteer-hero">
+          <p className="volunteer-hero__kicker">
+            Call for volunteers <span aria-hidden>·</span> Remnants Reborn
+          </p>
+          <h1 className="volunteer-hero__title">Serve at Kairos Summit 2026</h1>
+          <p className="volunteer-hero__lead">
+            Kairos Summit is calling on willing hands and hearts to serve at Remnants Reborn, our second
+            edition in Port Harcourt. If serving is your thing, this is your chance to use your gifts, gain
+            experience, and stand with a community of believers building something that lasts.
+          </p>
+        </header>
+
+        <section className="volunteer-form-section" aria-labelledby="volunteer-form-heading">
+          <h2 id="volunteer-form-heading" className="sr-only">Volunteer application</h2>
+
+          {isSent ? (
+            <div className="volunteer-sent">
+              <h3 className="volunteer-sent__title">Your application is ready</h3>
+              <p className="volunteer-sent__note">
+                We opened WhatsApp with your details filled in. Press send there and the team will reply on
+                the same chat. If the chat did not open, use the button below.
+              </p>
+              <button type="button" className="volunteer-submit" onClick={openWhatsApp}>
+                Open WhatsApp again
+              </button>
+              <button type="button" className="volunteer-sent__edit" onClick={() => setIsSent(false)}>
+                Edit my answers
+              </button>
+            </div>
+          ) : (
+            <form className="volunteer-form" onSubmit={handleSubmit}>
+              <div className="volunteer-field">
+                <span className="volunteer-field__label">Full Name *</span>
+                <div className="volunteer-field__row volunteer-field__row--name">
+                  <select
+                    className="volunteer-input"
+                    value={form.title}
+                    onChange={(e) => update('title', e.target.value)}
+                    aria-label="Title"
+                  >
+                    {NAME_TITLES.map((option) => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                  <input
+                    type="text"
+                    className="volunteer-input"
+                    placeholder="First Name"
+                    aria-label="First name"
+                    value={form.firstName}
+                    onChange={(e) => update('firstName', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    className="volunteer-input"
+                    placeholder="Last Name"
+                    aria-label="Last name"
+                    value={form.lastName}
+                    onChange={(e) => update('lastName', e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <label className="volunteer-field">
+                <span className="volunteer-field__label">Email Address *</span>
+                <input
+                  type="email"
+                  className="volunteer-input"
+                  placeholder="example@example.com"
+                  value={form.email}
+                  onChange={(e) => update('email', e.target.value)}
+                />
+              </label>
+
+              <label className="volunteer-field">
+                <span className="volunteer-field__label">Phone Number (WhatsApp) *</span>
+                <input
+                  type="tel"
+                  className="volunteer-input"
+                  placeholder="(000) 000-0000"
+                  value={form.phone}
+                  onChange={(e) => update('phone', e.target.value)}
+                />
+              </label>
+
+              <label className="volunteer-field">
+                <span className="volunteer-field__label">Church / Organization</span>
+                <input
+                  type="text"
+                  className="volunteer-input"
+                  value={form.organization}
+                  onChange={(e) => update('organization', e.target.value)}
+                />
+              </label>
+
+              <label className="volunteer-field">
+                <span className="volunteer-field__label">Relevant Skills</span>
+                <input
+                  type="text"
+                  className="volunteer-input"
+                  value={form.skills}
+                  onChange={(e) => update('skills', e.target.value)}
+                />
+              </label>
+
+              <fieldset className="volunteer-field volunteer-choice">
+                <legend className="volunteer-field__label">Preferred Volunteer Areas *</legend>
+                <div className="volunteer-choice__grid">
+                  {VOLUNTEER_AREAS.map((area) => (
+                    <label className="volunteer-choice__item" key={area}>
+                      <input
+                        type="checkbox"
+                        checked={areas.includes(area)}
+                        onChange={() => toggleArea(area)}
+                      />
+                      <span>{area}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <fieldset className="volunteer-field volunteer-choice">
+                <legend className="volunteer-field__label">Availability to Volunteer *</legend>
+                <div className="volunteer-choice__grid">
+                  {VOLUNTEER_AVAILABILITY.map((slot) => (
+                    <label className="volunteer-choice__item" key={slot}>
+                      <input
+                        type="radio"
+                        name="volunteer-availability"
+                        checked={form.availability === slot}
+                        onChange={() => update('availability', slot)}
+                      />
+                      <span>{slot}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <fieldset className="volunteer-field">
+                <legend className="volunteer-field__label">Have you volunteered with Kairos Summit before?</legend>
+                <div className="volunteer-toggle">
+                  {['Yes', 'No'].map((answer) => (
+                    <button
+                      type="button"
+                      key={answer}
+                      className={`volunteer-toggle__btn ${form.servedBefore === answer ? 'volunteer-toggle__btn--active' : ''}`}
+                      aria-pressed={form.servedBefore === answer}
+                      onClick={() => update('servedBefore', answer)}
+                    >
+                      {answer}
+                    </button>
+                  ))}
+                </div>
+              </fieldset>
+
+              <label className="volunteer-field">
+                <span className="volunteer-field__label">
+                  Please share any previous volunteer experience or tell us why you'd like to volunteer.
+                </span>
+                <textarea
+                  className="volunteer-input volunteer-input--area"
+                  rows={5}
+                  value={form.note}
+                  onChange={(e) => update('note', e.target.value)}
+                />
+              </label>
+
+              {error ? <p className="volunteer-error" role="alert">{error}</p> : null}
+
+              <button type="submit" className="volunteer-submit">Submit Application</button>
+            </form>
+          )}
+        </section>
+      </main>
+      <SiteFooter />
+      <EventCountdownBar />
     </div>
   );
 }
@@ -1364,13 +2310,13 @@ function RegisterPage() {
           <aside className="register-desk__stage" aria-hidden={false}>
             <img
               src={remnantsRebornBanner}
-              alt="Remnants Reborn — Kairos Summit, 14 November 2026 at Celebr8 Centre"
+              alt="Remnants Reborn, Kairos Summit, 14 November 2026 at Celebr8 Centre"
               className="register-desk__poster"
             />
             <div className="register-desk__stage-fade" aria-hidden />
             <p className="register-desk__stage-note">
               Celebr8 Centre, Olu Obasanjo Road
-              <span>Saturday 14 November 2026 · 8:30 AM</span>
+              <span>Saturday 14 November 2026 · 10:00 AM</span>
             </p>
           </aside>
 
@@ -1393,7 +2339,7 @@ function RegisterPage() {
                   <p className="register-ticket__kicker">On the door list</p>
                   <h1 id="register-heading" className="register-ticket__name">{ticket.name}</h1>
                   <p className="register-ticket__copy">
-                    Saturday 14 November, 8:30 in the morning. Celebr8 Centre, Olu Obasanjo Road.
+                    Saturday 14 November, 10 in the morning. Celebr8 Centre, Olu Obasanjo Road.
                     If the plan shifts, we will write {ticket.email}.
                   </p>
                   <dl className="register-ticket__meta">
@@ -1423,7 +2369,7 @@ function RegisterPage() {
                   Take a seat.
                 </h1>
                 <p className="register-desk__lead">
-                  Write your name here if you are coming on Saturday. This is the list we will use at Celebr8 — not WhatsApp, not a story reply.
+                  Write your name here if you are coming on Saturday. This is the list we will use at Celebr8, not WhatsApp, not a story reply.
                 </p>
 
                 <form className="register-sheet" onSubmit={handleSubmit}>
@@ -1512,12 +2458,12 @@ function RegisterPage() {
                     <p className="register-sheet__error" role="alert">{submitError}</p>
                   ) : null}
                   <button type="submit" className="register-sheet__submit" disabled={isSubmitting}>
-                    {isSubmitting ? 'Adding your name…' : 'Put my name on the list'}
+                    {isSubmitting ? 'Adding your name…' : 'Get tickets'}
                   </button>
                 </form>
 
                 <ul className="register-aside">
-                  <li>Doors from 8:30. Come early if you want a seat near the front.</li>
+                  <li>Doors from 10:00. Come early if you want a seat near the front.</li>
                   <li>Last June this hall filled up. Write your name if you want a place this time.</li>
                 </ul>
               </>
@@ -1558,7 +2504,10 @@ function App() {
       <Route path="/about" element={<AboutPage />} />
       <Route path="/team-contact" element={<TeamContactPage />} />
       <Route path="/events" element={<EventsPage />} />
+      <Route path="/speakers" element={<SpeakersPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/shop" element={<ShopPage />} />
+      <Route path="/volunteer" element={<VolunteerPage />} />
       <Route path="/blog" element={<BlogPage />} />
       <Route path="/blog/:storySlug" element={<BlogStoryPage />} />
       <Route path="/" element={
@@ -1590,12 +2539,30 @@ function App() {
           </div>
         </div>
         <div className="hero__cta">
-          <Link to="/register" className="btn btn--primary">Register for event</Link>
-          <a href={WHATSAPP_LINK} className="btn btn--gold">Join community</a>
+          <Link to="/register" className="btn btn--primary">
+            Get tickets
+            <svg
+              className="btn__icon btn__icon--send"
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M22 2 11 13" />
+              <path d="M22 2 15 22l-4-9-9-4 20-7Z" />
+            </svg>
+          </Link>
+          <Link to="/volunteer" className="btn btn--gold">Volunteer</Link>
         </div>
         <Link to="/register" className="hero__event-box">
           <div className="hero__event-media">
-            <img src={remnantsRebornImg} alt="" className="hero__event-thumb" />
+            <img src={remnantsRebornBanner} alt="Remnants Reborn event flier" className="hero__event-thumb" />
           </div>
           <div className="hero__event-text">
             <p className="hero__event-title">
@@ -1603,7 +2570,7 @@ function App() {
               <span className="hero__event-name">Remnants Reborn</span>
             </p>
             <p className="hero__event-meta">14 November 2026 · Port Harcourt</p>
-            <span className="hero__event-action">Register for a seat</span>
+            <span className="hero__event-action">Get tickets</span>
           </div>
         </Link>
       </section>
@@ -1631,6 +2598,21 @@ function App() {
               Kairos Summit is more than a gathering. It is a formation space for believers who desire depth, clarity, and responsibility in their walk with God. We equip Christians to live out their faith with conviction in leadership, creativity, career, media, and everyday life. We believe this generation is not late, lost, or forgotten. We believe this is a Kairos moment.
             </p>
             <a href="https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t" className="link-arrow" target="_blank" rel="noopener noreferrer">Join the Community <span className="link-arrow__icon" aria-hidden>→</span></a>
+          </div>
+        </div>
+      </section>
+
+      {/* ----- KAIROS IN NUMBERS ----- */}
+      <section className="numbers" id="numbers" aria-labelledby="numbers-heading">
+        <div className="numbers__inner">
+          <h2 id="numbers-heading" className="numbers__label">Kairos Summit in numbers</h2>
+          <div className="numbers__grid">
+            {KAIROS_NUMBERS.map(({ value, label }) => (
+              <div className="numbers__item" key={label}>
+                <span className="numbers__value">{value}</span>
+                <span className="numbers__caption">{label}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -1707,9 +2689,9 @@ function App() {
 
       {/* ----- NEWS + CAROUSEL + JOIN MOVEMENT ----- */}
       <section className="section section--white" id="news">
-        <span className="tag">News</span>
+        <span className="tag">Highlight</span>
         <h2 className="section__title news__title">
-          News at <span className="highlight-gold">Kairos</span>? We're ready to help!
+          New at <span className="highlight-gold">Kairos</span>? We're ready to help!
         </h2>
         <p className="news__subtitle">
           Through gatherings, teachings, and community, Kairos Summit helps believers:
@@ -1746,7 +2728,6 @@ function App() {
                   </div>
                   <div className="rainbow-section__card-copy">
                     <h3 className="rainbow-section__card-title">{card.title}</h3>
-                    <span className="rainbow-section__card-date">{card.date}</span>
                   </div>
                 </div>
               );
@@ -1766,7 +2747,6 @@ function App() {
           </div>
         </div>
         <div className="rainbow-section__content">
-          <span className="tag tag--muted">Hero section</span>
           <h2 className="section__title join-movement__title">
             Join the <span className="highlight-gold">Movement</span>
           </h2>
@@ -1778,6 +2758,7 @@ function App() {
       </section>
 
       <SiteFooter />
+      <EventCountdownBar />
     </div>
       } />
     </Routes>
