@@ -1342,8 +1342,7 @@
   aspect-ratio: 3 / 4;
 }
 
-/* Fliers rest in black and white and regain colour on hover. Touch screens have
-   no hover, so they stay in colour there. */
+/* Fliers rest in black and white and regain colour on hover. */
 @media (hover: hover) {
   .speakers-list--fliers .speaker-card__photo {
     filter: grayscale(1);
@@ -1355,16 +1354,12 @@
   }
 }
 
-/* Touch screens cannot hover, so a tap brings a flier alive and it stays that way. */
+/* Touch screens cannot hover, so scrolling a flier into view is what brings it
+   to colour. The revealed class comes from SpeakerCard. */
 @media (hover: none) {
-  .speakers-list--fliers .speaker-card {
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-  }
-
   .speakers-list--fliers .speaker-card__photo {
     filter: grayscale(1);
-    transition: filter 0.4s ease;
+    transition: filter 0.6s ease;
   }
 
   .speakers-list--fliers .speaker-card--revealed .speaker-card__photo {
@@ -5669,9 +5664,14 @@
   transition: background 0.2s, transform 0.2s;
 }
 
-.volunteer-submit:hover {
+.volunteer-submit:hover:not(:disabled) {
   background: #FABD21;
   transform: translateY(-1px);
+}
+
+.volunteer-submit:disabled {
+  opacity: 0.6;
+  cursor: progress;
 }
 
 .volunteer-sent {

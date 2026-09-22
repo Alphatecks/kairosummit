@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Routes, Route, NavLink, Link, useLocation, useParams } from 'react-router-dom';
 import './App.css';
 
@@ -171,15 +171,24 @@ const SHOP_PRODUCTS = [
   },
 ];
 
-const NAME_TITLES = ['Mr.', 'Mrs.', 'Miss', 'Ms.', 'Dr.', 'Pst.'];
+// Titles and slugs mirror /api/volunteers/options, which rejects anything else.
+const NAME_TITLES = ['Mr', 'Mrs', 'Miss', 'Ms', 'Dr', 'Pastor', 'Bro', 'Sis'];
 const VOLUNTEER_AREAS = [
-  'Ushering/Protocol',
-  'Publicity',
-  'Content Creation',
-  'Logistics',
-  'Medicals',
+  { slug: 'ushering-protocol', name: 'Ushering/Protocol' },
+  { slug: 'publicity', name: 'Publicity' },
+  { slug: 'content-creation', name: 'Content Creation' },
+  { slug: 'graphics-design', name: 'Graphics Design' },
+  { slug: 'social-media', name: 'Social Media' },
+  { slug: 'admin', name: 'Admin' },
+  { slug: 'logistics', name: 'Logistics' },
+  { slug: 'medicals', name: 'Medicals' },
 ];
-const VOLUNTEER_AVAILABILITY = ['Full Day', 'Morning Only', 'Afternoon Only'];
+const VOLUNTEER_AVAILABILITY = [
+  { slug: 'full-day', name: 'Full Day' },
+  { slug: 'morning-only', name: 'Morning Only' },
+  { slug: 'afternoon-only', name: 'Afternoon Only' },
+];
+const VOLUNTEER_ENDPOINT = `${BLOG_API_BASE_URL}/api/volunteers`;
 
 const SHOP_CHECKOUT_ENDPOINT = `${BLOG_API_BASE_URL}/api/shop/checkout`;
 const SHOP_VERIFY_ENDPOINT = `${BLOG_API_BASE_URL}/api/shop/verify`;
@@ -494,16 +503,35 @@ function NavBar() {
   );
 }
 
-function SpeakerCard({ speaker, tapToReveal = false }) {
+function SpeakerCard({ speaker, revealOnScroll = false }) {
   const { name, role, img } = speaker;
-  // Touch screens have no hover, so a tap is what brings a flier to colour there.
+  // Touch screens have no hover, so scrolling a flier into the middle of the
+  // screen is what brings it to colour there. It stays in colour afterwards so
+  // it does not flicker back to grey on the way past.
   const [isRevealed, setIsRevealed] = useState(false);
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!revealOnScroll || !card || typeof IntersectionObserver === 'undefined') return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setIsRevealed(true);
+        observer.disconnect();
+      },
+      // Fires once the card rises past the lower fifth of the screen, which is a
+      // wide enough band that a fast flick cannot scroll straight over it.
+      { rootMargin: '0px 0px -20% 0px' },
+    );
+
+    observer.observe(card);
+    return () => observer.disconnect();
+  }, [revealOnScroll]);
 
   return (
-    <article
-      className={`speaker-card ${isRevealed ? 'speaker-card--revealed' : ''}`}
-      onClick={tapToReveal ? () => setIsRevealed((prev) => !prev) : undefined}
-    >
+    <article ref={cardRef} className={`speaker-card ${isRevealed ? 'speaker-card--revealed' : ''}`}>
       <div className="speaker-card__poster">
         {img ? (
           <img src={img} alt={name} className="speaker-card__photo" />
@@ -544,7 +572,7 @@ function SpeakersPage() {
           <h2 id="speaker-heading" className="speakers-list__title speakers-list__title--tight">Speakers</h2>
           <div className="speakers-grid">
             {CONFIRMED_SPEAKERS.map((speaker) => (
-              <SpeakerCard key={speaker.id} speaker={speaker} tapToReveal />
+              <SpeakerCard key={speaker.id} speaker={speaker} revealOnScroll />
             ))}
           </div>
         </section>
@@ -555,7 +583,7 @@ function SpeakersPage() {
           </h2>
           <div className="speakers-grid">
             {EVENT_LINEUP.map((person) => (
-              <SpeakerCard key={person.id} speaker={person} tapToReveal />
+              <SpeakerCard key={person.id} speaker={person} revealOnScroll />
             ))}
           </div>
         </section>
@@ -565,7 +593,7 @@ function SpeakersPage() {
           <h2 id="previous-speakers-heading" className="speakers-list__title">Previous Speakers</h2>
           <div className="speakers-grid">
             {PREVIOUS_SPEAKERS.map((speaker) => (
-              <SpeakerCard key={speaker.id} speaker={speaker} tapToReveal />
+              <SpeakerCard key={speaker.id} speaker={speaker} revealOnScroll />
             ))}
           </div>
         </section>
@@ -1650,7 +1678,9 @@ function ShopPage() {
 
       if (!response.ok || !authorizationUrl) {
         setFormError(payload?.message || 'We could not start the payment. Please try again.');
-        setShowWhatsAppFallback(true);
+        // A rejected field is something the buyer can fix here, so only offer
+        // WhatsApp when the server itself is the problem.
+        setShowWhatsAppFallback(!response.ok ? response.status >= 500 : true);
         setIsSubmitting(false);
         return;
       }
@@ -2010,7 +2040,9 @@ function VolunteerPage() {
   });
   const [areas, setAreas] = useState([]);
   const [error, setError] = useState('');
+  const [isSending, setIsSending] = useState(false);
   const [isSent, setIsSent] = useState(false);
+  const [showWhatsAppFallback, setShowWhatsAppFallback] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -2020,11 +2052,16 @@ function VolunteerPage() {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
 
-  function toggleArea(area) {
-    setAreas((prev) => (prev.includes(area) ? prev.filter((item) => item !== area) : [...prev, area]));
+  function toggleArea(slug) {
+    setAreas((prev) => (prev.includes(slug) ? prev.filter((item) => item !== slug) : [...prev, slug]));
+  }
+
+  function areaNames() {
+    return VOLUNTEER_AREAS.filter((area) => areas.includes(area.slug)).map((area) => area.name);
   }
 
   function buildApplication() {
+    const availability = VOLUNTEER_AVAILABILITY.find((slot) => slot.slug === form.availability);
     const lines = [
       'Kairos Summit volunteer application',
       `Name: ${form.title} ${form.firstName.trim()} ${form.lastName.trim()}`,
@@ -2032,8 +2069,8 @@ function VolunteerPage() {
       `Phone: ${form.phone.trim()}`,
       form.organization.trim() ? `Church / Organisation: ${form.organization.trim()}` : null,
       form.skills.trim() ? `Relevant skills: ${form.skills.trim()}` : null,
-      `Preferred areas: ${areas.join(', ')}`,
-      `Availability: ${form.availability}`,
+      `Preferred areas: ${areaNames().join(', ')}`,
+      availability ? `Availability: ${availability.name}` : null,
       form.servedBefore ? `Volunteered before: ${form.servedBefore}` : null,
       form.note.trim() ? `Note: ${form.note.trim()}` : null,
     ];
@@ -2045,7 +2082,7 @@ function VolunteerPage() {
     window.open(url, '_blank', 'noopener,noreferrer');
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     if (!form.firstName.trim() || !form.lastName.trim() || !form.email.trim() || !form.phone.trim()) {
@@ -2062,8 +2099,46 @@ function VolunteerPage() {
     }
 
     setError('');
-    openWhatsApp();
-    setIsSent(true);
+    setShowWhatsAppFallback(false);
+    setIsSending(true);
+
+    try {
+      const response = await fetch(VOLUNTEER_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: form.title,
+          firstName: form.firstName.trim(),
+          lastName: form.lastName.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          churchOrganization: form.organization.trim(),
+          relevantSkills: form.skills.trim(),
+          volunteerAreas: areas,
+          availability: form.availability,
+          volunteeredBefore: form.servedBefore === 'Yes',
+          experienceNote: form.note.trim(),
+        }),
+      });
+
+      const payload = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        setError(payload?.message || 'We could not send your application. Please try again.');
+        // A rejected field is something the applicant can fix here, so only offer
+        // WhatsApp when the server itself is the problem.
+        setShowWhatsAppFallback(response.status >= 500);
+        setIsSending(false);
+        return;
+      }
+
+      setIsSending(false);
+      setIsSent(true);
+    } catch (requestError) {
+      setError('We could not reach the server. Check your connection and try again.');
+      setShowWhatsAppFallback(true);
+      setIsSending(false);
+    }
   }
 
   return (
@@ -2087,16 +2162,13 @@ function VolunteerPage() {
 
           {isSent ? (
             <div className="volunteer-sent">
-              <h3 className="volunteer-sent__title">Your application is ready</h3>
+              <h3 className="volunteer-sent__title">Application received</h3>
               <p className="volunteer-sent__note">
-                We opened WhatsApp with your details filled in. Press send there and the team will reply on
-                the same chat. If the chat did not open, use the button below.
+                Thank you, {form.firstName.trim()}. Your application is with the team and we will reach out on
+                the phone number you gave us as we get closer to Remnants Reborn.
               </p>
-              <button type="button" className="volunteer-submit" onClick={openWhatsApp}>
-                Open WhatsApp again
-              </button>
               <button type="button" className="volunteer-sent__edit" onClick={() => setIsSent(false)}>
-                Edit my answers
+                Review my answers
               </button>
             </div>
           ) : (
@@ -2179,13 +2251,13 @@ function VolunteerPage() {
                 <legend className="volunteer-field__label">Preferred Volunteer Areas *</legend>
                 <div className="volunteer-choice__grid">
                   {VOLUNTEER_AREAS.map((area) => (
-                    <label className="volunteer-choice__item" key={area}>
+                    <label className="volunteer-choice__item" key={area.slug}>
                       <input
                         type="checkbox"
-                        checked={areas.includes(area)}
-                        onChange={() => toggleArea(area)}
+                        checked={areas.includes(area.slug)}
+                        onChange={() => toggleArea(area.slug)}
                       />
-                      <span>{area}</span>
+                      <span>{area.name}</span>
                     </label>
                   ))}
                 </div>
@@ -2195,14 +2267,14 @@ function VolunteerPage() {
                 <legend className="volunteer-field__label">Availability to Volunteer *</legend>
                 <div className="volunteer-choice__grid">
                   {VOLUNTEER_AVAILABILITY.map((slot) => (
-                    <label className="volunteer-choice__item" key={slot}>
+                    <label className="volunteer-choice__item" key={slot.slug}>
                       <input
                         type="radio"
                         name="volunteer-availability"
-                        checked={form.availability === slot}
-                        onChange={() => update('availability', slot)}
+                        checked={form.availability === slot.slug}
+                        onChange={() => update('availability', slot.slug)}
                       />
-                      <span>{slot}</span>
+                      <span>{slot.name}</span>
                     </label>
                   ))}
                 </div>
@@ -2238,8 +2310,15 @@ function VolunteerPage() {
               </label>
 
               {error ? <p className="volunteer-error" role="alert">{error}</p> : null}
+              {showWhatsAppFallback ? (
+                <button type="button" className="volunteer-sent__edit" onClick={openWhatsApp}>
+                  Send this application on WhatsApp instead
+                </button>
+              ) : null}
 
-              <button type="submit" className="volunteer-submit">Submit Application</button>
+              <button type="submit" className="volunteer-submit" disabled={isSending}>
+                {isSending ? 'Sending...' : 'Submit Application'}
+              </button>
             </form>
           )}
         </section>
