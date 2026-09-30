@@ -52,6 +52,7 @@ import capBlackImg from './assets/images/merch/cap-black.jpg';
 import capWhiteImg from './assets/images/merch/cap-white.jpg';
 
 const WHATSAPP_LINK = 'https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t';
+const ATTENDEES_WHATSAPP_LINK = 'https://chat.whatsapp.com/Ef4kawPIgW8FvBfwiOq0Y6?mode=gi_t';
 const EVENT_START = '2026-11-14T10:00:00+01:00'; // Remnants Reborn, 10:00 AM WAT
 const INSTAGRAM_LINK = 'https://www.instagram.com/kairos_summit/';
 const BLOG_API_BASE_URL = 'https://blogger-backend-km7w.onrender.com'; // live Render API
@@ -2351,16 +2352,40 @@ function RegisterPage() {
   const [ticket, setTicket] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [showAttendeesPrompt, setShowAttendeesPrompt] = useState(false);
+  const attendeesJoinRef = useRef(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     try {
       const saved = window.localStorage.getItem(REGISTER_STORAGE_KEY);
-      if (saved) setTicket(JSON.parse(saved));
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setTicket(parsed);
+        if (parsed?.attendeesPromptOpen) setShowAttendeesPrompt(true);
+      }
     } catch {
       setTicket(null);
     }
   }, []);
+
+  useEffect(() => {
+    if (!showAttendeesPrompt) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    attendeesJoinRef.current?.focus();
+    const blockEscape = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    };
+    window.addEventListener('keydown', blockEscape, true);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', blockEscape, true);
+    };
+  }, [showAttendeesPrompt]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -2416,8 +2441,10 @@ function RegisterPage() {
         city: saved.comingFrom || comingFrom,
         heardFrom: saved.whoToldYou || whoToldYou,
         code: saved.code || saved.id || makeSeatCode(firstName, lastName),
+        attendeesPromptOpen: true,
       };
       setTicket(nextTicket);
+      setShowAttendeesPrompt(true);
       try {
         window.localStorage.setItem(REGISTER_STORAGE_KEY, JSON.stringify(nextTicket));
       } catch {
@@ -2432,11 +2459,26 @@ function RegisterPage() {
 
   const resetTicket = () => {
     setTicket(null);
+    setShowAttendeesPrompt(false);
     try {
       window.localStorage.removeItem(REGISTER_STORAGE_KEY);
     } catch {
       /* ignore */
     }
+  };
+
+  const acknowledgeAttendeesGroup = () => {
+    setShowAttendeesPrompt(false);
+    setTicket((current) => {
+      if (!current) return current;
+      const next = { ...current, attendeesPromptOpen: false };
+      try {
+        window.localStorage.setItem(REGISTER_STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore full storage */
+      }
+      return next;
+    });
   };
 
   return (
@@ -2609,6 +2651,35 @@ function RegisterPage() {
         </div>
       </main>
       <SiteFooter />
+      {showAttendeesPrompt ? (
+        <div className="attendees-prompt" role="presentation">
+          <div
+            className="attendees-prompt__card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="attendees-prompt-title"
+            aria-describedby="attendees-prompt-copy"
+          >
+            <p className="attendees-prompt__kicker">Required next step</p>
+            <h2 id="attendees-prompt-title" className="attendees-prompt__title">
+              Join the attendees group.
+            </h2>
+            <p id="attendees-prompt-copy" className="attendees-prompt__copy">
+              Your name is on the door list. Join Kairos Summit Attendees 2026 on WhatsApp before you leave this page. That is where seat updates for Remnants Reborn are sent.
+            </p>
+            <a
+              ref={attendeesJoinRef}
+              className="attendees-prompt__join"
+              href={ATTENDEES_WHATSAPP_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={acknowledgeAttendeesGroup}
+            >
+              Join the attendees group
+            </a>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
