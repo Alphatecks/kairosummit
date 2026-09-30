@@ -6,7 +6,7 @@ import logo from './assets/images/icons/logo.svg';
 import ideaIcon from './assets/icons/idea-01.png';
 import heroBg from './assets/images/pictures/3.jpeg';
 import remnantsRebornImg from './assets/images/pictures/remnants-reborn-hero.jpg';
-import remnantsRebornBanner from './assets/images/pictures/20260902_124449.jpg';
+import remnantsRebornBanner from './assets/images/pictures/20260924_154558.jpg';
 import whoWeAreImg from './assets/images/pictures/2.jpeg';
 import truthDisciplineImg from './assets/images/pictures/9.jpeg';
 import whatWeDoImg1 from './assets/images/pictures/8.jpeg';
