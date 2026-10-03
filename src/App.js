@@ -53,6 +53,7 @@ import capWhiteImg from './assets/images/merch/cap-white.jpg';
 
 const WHATSAPP_LINK = 'https://chat.whatsapp.com/CyPJlBlV4JhCxMstJAOIrq?mode=gi_t';
 const ATTENDEES_WHATSAPP_LINK = 'https://chat.whatsapp.com/Ef4kawPIgW8FvBfwiOq0Y6?mode=gi_t';
+const VOLUNTEERS_WHATSAPP_LINK = 'https://chat.whatsapp.com/LMt6MUUVGyk5FAjINqDt74?mode=gi_t';
 const EVENT_START = '2026-11-14T10:00:00+01:00'; // Remnants Reborn, 10:00 AM WAT
 const INSTAGRAM_LINK = 'https://www.instagram.com/kairos_summit/';
 const BLOG_API_BASE_URL = 'https://blogger-backend-km7w.onrender.com'; // live Render API
@@ -2044,10 +2045,30 @@ function VolunteerPage() {
   const [isSending, setIsSending] = useState(false);
   const [isSent, setIsSent] = useState(false);
   const [showWhatsAppFallback, setShowWhatsAppFallback] = useState(false);
+  const [showVolunteersPrompt, setShowVolunteersPrompt] = useState(false);
+  const volunteersJoinRef = useRef(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    if (!showVolunteersPrompt) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    volunteersJoinRef.current?.focus();
+    const blockEscape = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    };
+    window.addEventListener('keydown', blockEscape, true);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', blockEscape, true);
+    };
+  }, [showVolunteersPrompt]);
 
   function update(field, value) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -2135,6 +2156,7 @@ function VolunteerPage() {
 
       setIsSending(false);
       setIsSent(true);
+      setShowVolunteersPrompt(true);
     } catch (requestError) {
       setError('We could not reach the server. Check your connection and try again.');
       setShowWhatsAppFallback(true);
@@ -2326,6 +2348,35 @@ function VolunteerPage() {
       </main>
       <SiteFooter />
       <EventCountdownBar />
+      {showVolunteersPrompt ? (
+        <div className="attendees-prompt" role="presentation">
+          <div
+            className="attendees-prompt__card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="volunteers-prompt-title"
+            aria-describedby="volunteers-prompt-copy"
+          >
+            <p className="attendees-prompt__kicker">Required next step</p>
+            <h2 id="volunteers-prompt-title" className="attendees-prompt__title">
+              Join the volunteers group.
+            </h2>
+            <p id="volunteers-prompt-copy" className="attendees-prompt__copy">
+              Your application is in. Join Volunteers for Kairos Summit 2026 on WhatsApp before you leave this page. That is where volunteer updates for Remnants Reborn are sent.
+            </p>
+            <a
+              ref={volunteersJoinRef}
+              className="attendees-prompt__join"
+              href={VOLUNTEERS_WHATSAPP_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setShowVolunteersPrompt(false)}
+            >
+              Join the volunteers group
+            </a>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
